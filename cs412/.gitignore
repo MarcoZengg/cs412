@@ -13,6 +13,7 @@ env/
 .env
 .env.*
 
+
 # Django migrations (temporary or backup files)
 */migrations/__pycache__/
 */migrations/*.pyc
