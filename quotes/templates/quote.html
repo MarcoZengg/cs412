@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Donald Trump</h1>
+
+<div>
+    <img src="{{ quote_images }}" 
+        alt="Quote image" 
+        width="600" 
+        height="300"
+        class="quote-image">
+</div>
+<div>
+    {{quote}}
+</div>
+ 
+ 
+{% endblock %}
