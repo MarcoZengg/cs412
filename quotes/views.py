@@ -34,15 +34,6 @@ def show_all(request):
     }
     return render(request, template, context)
 
-# def show_all(request):
-#     template = 'show_all.html'
-#     # Pair images with quotes, using None for quotes if there are more images
-#     quote_pairs = list(zip(image_urls, quotes + [None] * (len(image_urls) - len(quotes))))
-#     context = {
-#         "quote_pairs": quote_pairs,
-#     }
-#     return render(request, template, context)
-
 def about(request):
     template = 'about.html'
     context = {
