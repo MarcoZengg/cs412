@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q1=%!78m5n)j_ibj&7w+3asnnwr%k2jp2$jbm8wyv*%bump!4t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['cs-webapps.bu.edu']
+ALLOWED_HOSTS = ['cs-webapps.bu.edu', '*']
 
 
 # Application definition
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'hw',
+    'quotes',
 ]
 
 MIDDLEWARE = [
@@ -129,5 +131,5 @@ import socket
 CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
 
 if socket.gethostname() == CS_DEPLOYMENT_HOSTNAME:
-    STATIC_URL = '/username/static/'
-    MEDIA_URL = '/username/media/'
+    STATIC_URL = '/xiankz23/static/'
+    MEDIA_URL = '/xiankz23/media/'
