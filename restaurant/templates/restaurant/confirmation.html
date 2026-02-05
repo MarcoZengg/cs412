@@ -1,0 +1,62 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div>
+<h1>Order Summary</h1>
+
+    <p>Hi, {{ name }}! Thank you for your order.</p>
+    <h4>Here is your order detail:</h4>
+    <p>
+        Name: {{ name }}<br>
+        Email: {{ email }}<br>
+        Phone: {{ phone }}
+    </p>
+    <ul>
+        <li>
+            <strong>Meal:</strong> {{ meal_label|default:"—" }}
+            {% if meal_price is not None %} 
+            ${{ meal_price}} {% endif %}
+        </li>
+        <li>
+            <strong>Side:</strong> {{ side_label|default:"—" }}
+            {% if side_price is not None %} 
+            ${{ side_price}} {% endif %}
+        </li>
+        <li>
+            <strong>Drink:</strong> {{ drink_label|default:"—" }}
+            {% if drink_price is not None %}
+            ${{ drink_price}} {% endif %}
+        </li>
+        <li>
+            <strong>Size:</strong> {{ size_label }}
+            {% if size_upcharge %}
+                {% if size_upcharge > 0 %}(+${{ size_upcharge }}){% endif %}
+            {% endif %}
+        </li>
+        <li>
+            <strong>Daily Special:</strong> {{ daily_special_label|default:"—" }}
+            {% if daily_special_price is not None%}
+                ${{ daily_special_price }}
+            {% endif %}
+        </li>
+        {% if extras_prices %}
+            <li>
+                <strong>Extras:</strong>
+                <ul style="margin:0; padding-left: 1.5em;">
+                    {% for label, price in extras_prices %}
+                        <li>{{ label }} 
+                            ${{ price}}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+        {% if special_requests %}
+            <li><strong>Special requests:</strong> {{ special_requests }}</li>
+        {% endif %}
+        <li><strong>Total:</strong> ${{ total}}</li>
+    </ul>
+
+    <p><strong>Your order will be ready around {{ ready_time }}</strong></p>
+
+</div>
+{% endblock %}

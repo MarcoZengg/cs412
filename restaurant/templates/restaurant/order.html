@@ -1,0 +1,88 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div>
+<h1>Order</h1>
+ 
+ 
+<form action="{% url 'confirmation' %}" method="POST">
+    {% csrf_token %}
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name">
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email">
+
+    </div>
+    <div>
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone" id="phone">
+
+    </div>
+    
+    <div>
+        <label for="meal">Select your meal:</label>
+        <select name="meal" id="meal">
+            <option value="">-- Choose a meal --</option>
+            <option value="big_mac">Big Mac</option>
+            <option value="quarter_pounder">Quarter Pounder with Cheese</option>
+            <option value="mcchicken">McChicken</option>
+            <option value="filet_o_fish">Filet-O-Fish</option>
+            <option value="happy_meal">Happy Meal</option>
+        </select>
+    </div>
+    <div>
+        <label for="side">Side:</label>
+        <select name="side" id="side">
+            <option value="">-- Choose a side --</option>
+            <option value="fries">Fries</option>
+            <option value="apple_slices">Apple Slices</option>
+            <option value="side_salad">Side Salad</option>
+            <option value="mozz_sticks">Mozzarella Sticks</option>
+        </select>
+    </div>
+    <div>
+        <label for="drink">Drink:</label>
+        <select name="drink" id="drink">
+            <option value="">-- Choose a drink --</option>
+            <option value="cola">Coca-Cola</option>
+            <option value="sprite">Sprite</option>
+            <option value="fanta">Fanta</option>
+            <option value="iced_tea">Iced Tea</option>
+            <option value="water">Water</option>
+            <option value="milkshake">Milkshake</option>
+        </select>
+    </div>
+    <div>
+        <label for="daily_special">Daily Special:</label>
+        <input type="checkbox" name="daily_special" value="{{ special }}"> {{ special_str }}<br>
+    </div>
+    <div>
+        <label>Extras:</label><br>
+        <input type="checkbox" name="extras" value="extra_cheese"> Extra Cheese<br>
+        <input type="checkbox" name="extras" value="bacon"> Bacon<br>
+        <input type="checkbox" name="extras" value="lettuce"> Lettuce<br>
+        <input type="checkbox" name="extras" value="tomato"> Tomato<br>
+        <input type="checkbox" name="extras" value="onion"> Onion<br>
+    </div>
+    <div>
+        <label>Would you like your meal to be:</label><br>
+        <input type="radio" name="size" value="regular" id="size_regular" checked>
+        <label for="size_regular">Regular</label>
+        <input type="radio" name="size" value="large" id="size_large">
+        <label for="size_large">Large (+$1.00)</label>
+    </div>
+    <div>
+        <label for="special_requests">Special requests:</label><br>
+        <textarea name="special_requests" id="special_requests" rows="3" cols="35"></textarea>
+    </div>
+    <br>
+
+    <input type="submit" value="Place Order">
+</form>
+ 
+ 
+</div>
+{% endblock %}
