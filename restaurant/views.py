@@ -1,21 +1,22 @@
+"""
+Restaurant app views: home, order form, and order confirmation.
+"""
 from django.shortcuts import render
-
-# Create your views here.
 from django.http import HttpRequest, HttpResponse
 import random
 from datetime import datetime, timedelta
 
 
-
 def main(request):
+    """Home/welcome page."""
     template = 'restaurant/main.html'
-
     return render(request, template)
 
+
 def order(request):
+    """Order form page; picks a random daily special to display."""
     template = 'restaurant/order.html'
     special = random.choice([i for i in DAILY_SPECIAL])
-
     special_str = DAILY_SPECIAL[special]
     context = {
         'special' : special,
@@ -25,6 +26,7 @@ def order(request):
     return render(request, template, context)
 
 
+# --- Display labels (for clearer display of the value we get from user input/selection) ---
 MEAL_LABELS = {
     'big_mac': 'Big Mac',
     'quarter_pounder': 'Quarter Pounder with Cheese',
@@ -62,7 +64,7 @@ SIZE = {
     'large': 'Large',
 }
 
-# Prices (stored server-side so they can't be tampered with)
+# --- Prices for each item  ---
 MEAL_PRICES = {
     'big_mac': 5.99,
     'quarter_pounder': 6.49,
@@ -99,10 +101,12 @@ LARGE_UPCHARGE = 1.00
 
 
 def confirmation(request):
+    """Process POST order form: extract data, compute total and ready time, show summary."""
     template = 'restaurant/confirmation.html'
     context = {}
 
     if request.POST:
+        # Get form data (use .get / .getlist to avoid KeyError on empty or missing fields)
         name = request.POST.get('name', '')
         email = request.POST.get('email', '')
         phone = request.POST.get('phone', '')
@@ -124,9 +128,11 @@ def confirmation(request):
         size_upcharge = LARGE_UPCHARGE if size == 'large' else 0
         total = meal_price + side_price + drink_price + extras_total + size_upcharge + daily_special_price
 
+        # Ready time: random 30–60 minutes from now
         minutes_from_now = random.randint(30, 60)
         ready_datetime = datetime.now() + timedelta(minutes=minutes_from_now)
 
+        # Pass labels, prices, and total to confirmation template
         context = {
             'name': name,
             'email': email,

@@ -1,6 +1,8 @@
 {% extends 'restaurant/base.html' %}
+{# Home/welcome page: logo, location, hours, CTA to order, hero image, and about section. #}
 
 {% block content %}
+<!-- Header: logo and wordmark -->
 <h1>
     <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/330px-McDonald%27s_Golden_Arches.svg.png" 
@@ -14,25 +16,24 @@
     </div>
     <!-- McDonald’s -->
 </h1>
+<!-- Welcome text, location, hours, and link to order form -->
 <p style="font-size: 1.8rem;">Welcome to McDonald's — Feasterville-Trevose. We're glad you're here.</p>
 <p>Location: Feasterville-Trevose, Pennsylvania</p>
 <p>Hours: Opens ~6:00 AM, closes ~3:00 AM daily</p>
 <p><a href="{% url 'order' %}" style="display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background: #ffc72c; color: #27251f; text-decoration: none; border-radius: 4px; font-weight: bold;">Order now →</a></p>
 
+<!-- Home image -->
 <div>
-    <img src="https://ichef.bbci.co.uk/images/ic/480xn/p0469fmz.jpg.webp" 
-        alt="Image" 
+    <img src="https://ichef.bbci.co.uk/images/ic/480xn/p0469fmz.jpg.webp"
+        alt="McDonald's burgers and fries" 
         width="900" 
         height="450">
 </div>
 
-<p>
-
-</p>
-
+<!-- Additional About section -->
 <h2>About our kitchen</h2>
     <p>Our crew takes pride in every order. Come for the classics — Big Macs, Quarter Pounders, McChicken — and stay for the sides, drinks, and extras. Customize your meal and we'll have it ready for you.</p>
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+    <div >
         <img src="https://www.phillyburbs.com/gcdn/authoring/authoring-images/2024/10/20/NBCC/75767032007-trump-at-mcdonalads-dh-001.jpg?width=1200&disable=upscale&format=pjpg&auto=webp"
             alt="McDonald's restaurant"
             width="450"

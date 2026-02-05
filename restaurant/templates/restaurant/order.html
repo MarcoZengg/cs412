@@ -1,12 +1,14 @@
 {% extends 'restaurant/base.html' %}
+{# Order form: customer info, meal/side/drink, daily special, extras, size, special requests. Submits to confirmation view. #}
 
 {% block content %}
 <div>
 <h1>Order</h1>
- 
- 
+
 <form action="{% url 'confirmation' %}" method="POST">
+    {# CSRF protection: include Django's anti-forgery token in the form #}
     {% csrf_token %}
+    <!-- Customer contact info (used on confirmation page) -->
     <div>
         <label for="name">Name:</label>
         <input type="text" name="name" id="name">
@@ -21,7 +23,8 @@
         <input type="text" name="phone" id="phone">
 
     </div>
-    
+
+    <!-- Meal, side, and drink (value is sent in POST; confirmation view looks up label and price) -->
     <div>
         <label for="meal">Select your meal:</label>
         <select name="meal" id="meal">
@@ -55,10 +58,12 @@
             <option value="milkshake">Milkshake</option>
         </select>
     </div>
+    <!-- Daily special: random item from order view context (special, special_str) -->
     <div>
         <label for="daily_special">Daily Special:</label>
         <input type="checkbox" name="daily_special" value="{{ special }}"> {{ special_str }}<br>
     </div>
+    <!-- Extras: multiple checkboxes; request.POST.getlist('extras') in view -->
     <div>
         <label>Extras:</label><br>
         <input type="checkbox" name="extras" value="extra_cheese"> Extra Cheese<br>
@@ -67,6 +72,7 @@
         <input type="checkbox" name="extras" value="tomato"> Tomato<br>
         <input type="checkbox" name="extras" value="onion"> Onion<br>
     </div>
+    <!-- Size: regular or large (large adds LARGE_UPCHARGE in confirmation view) -->
     <div>
         <label>Would you like your meal to be:</label><br>
         <input type="radio" name="size" value="regular" id="size_regular" checked>
@@ -74,6 +80,7 @@
         <input type="radio" name="size" value="large" id="size_large">
         <label for="size_large">Large (+$1.00)</label>
     </div>
+    <!-- Optional free-text; displayed on confirmation if provided -->
     <div>
         <label for="special_requests">Special requests:</label><br>
         <textarea name="special_requests" id="special_requests" rows="3" cols="35"></textarea>

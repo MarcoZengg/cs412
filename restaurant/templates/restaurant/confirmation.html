@@ -1,4 +1,5 @@
 {% extends 'restaurant/base.html' %}
+{# Confirmation page after submitting the order form; shows customer info, line items, total, and ready time. #}
 
 {% block content %}
 <div>
@@ -6,11 +7,13 @@
 
     <p>Hi, {{ name }}! Thank you for your order.</p>
     <h4>Here is your order detail:</h4>
+    <!-- Customer contact info from the form -->
     <p>
         Name: {{ name }}<br>
         Email: {{ email }}<br>
         Phone: {{ phone }}
     </p>
+    <!-- Order line items with prices (from confirmation view context) -->
     <ul>
         <li>
             <strong>Meal:</strong> {{ meal_label|default:"—" }}
@@ -56,6 +59,7 @@
         <li><strong>Total:</strong> ${{ total}}</li>
     </ul>
 
+    <!-- Ready time is set in the view (random 30–60 min from order time) -->
     <p><strong>Your order will be ready around {{ ready_time }}</strong></p>
 
 </div>

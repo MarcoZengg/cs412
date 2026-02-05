@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="{% static 'styles.css' %}">
     </head>
     <body>
-        
+    <!-- Site-wide navigation: Home and Order -->
     <nav>
         <ul>
             <li><a href="{% url 'main' %}">Home</a></li>
@@ -14,7 +14,6 @@
  
  
     </nav>
-        
     {% block content %}
     {% endblock %}
     
