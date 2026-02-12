@@ -1,17 +1,27 @@
-from django.shortcuts import render
+# File: views.py
+# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026
+# Description: Class-based views for mini_insta: list all profiles and show
+#              a single profile by primary key.
 
-# Create your views here.
 from .models import Profile
 from django.views.generic import ListView, DetailView
-import random
- 
- 
+
+
 class ProfileListView(ListView):
-    '''Create a subclass of ListView to display all blog articles.'''
- 
- 
-    model = Profile # retrieve objects of type Profile from the database
+    """
+    Return a page listing all Profile records. Renders show_all_profiles.html
+    with context variable 'profiles' (QuerySet of Profile objects).
+    """
+    model = Profile
     template_name = 'mini_insta/show_all_profiles.html'
-    context_object_name = 'profiles' # how to find the data in the template file
- 
- 
+    context_object_name = 'profiles'
+
+
+class ProfileDetailView(DetailView):
+    """
+    Return a page for one Profile. Primary key comes from URL (profile/<pk>/).
+    Renders show_profile.html with context variable 'profile' (one Profile).
+    """
+    model = Profile
+    template_name = 'mini_insta/show_profile.html'
+    context_object_name = 'profile'

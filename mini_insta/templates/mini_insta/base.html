@@ -1,8 +1,11 @@
-<!-- blog/templates/blog/base.html -->
+{# File: base.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Base template for mini_insta. Provides document structure, #}
+{#              CSS link, header with nav, content block, and footer. #}
 {% load static %}
 <html>
     <head>
-        <title>Insta</title>
+        <title>Mini Insta</title>
         <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
     </head>
     <body>
@@ -14,9 +17,12 @@
                 </ul>
             </nav>
         </header>
-    
-    {% block content %}
-    {% endblock %}    
-  
+
+        {% block content %}
+        {% endblock %}
+
+        <footer>
+            <p><a href="{% url 'show_all_profiles' %}">Back to Show All Profiles</a></p>
+        </footer>
     </body>
 </html>

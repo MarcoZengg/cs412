@@ -1,0 +1,23 @@
+{# File: show_profile.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Renders one Profile (from ProfileDetailView context 'profile'). #}
+{#              Shows display name, image if present, username, bio, join date. #}
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="grid-container">
+    <h1>{{ profile.display_name }}</h1>
+
+    <article class="featured">
+        {# Show image only if profile has a profile_image_url set. #}
+        {% if profile.profile_image_url %}
+        <img src="{{ profile.profile_image_url }}" alt="{{ profile.display_name }}" style="max-width: 100%; width: 400px;">
+        {% endif %}
+        <div>
+            <p><strong>Username:</strong> {{ profile.username }}</p>
+            <p><strong>Bio:</strong> {{ profile.bio_text }}</p>
+            <p><strong>Joined:</strong> {{ profile.join_date|date:"F j, Y" }}</p>
+        </div>
+    </article>
+</main>
+{% endblock %}

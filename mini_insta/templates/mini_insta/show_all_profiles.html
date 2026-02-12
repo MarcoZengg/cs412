@@ -1,32 +1,28 @@
+{# File: show_all_profiles.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Lists all Profile records. Extends base; fills content block #}
+{#              with a heading and a loop over context variable 'profiles'. #}
 {% extends 'mini_insta/base.html' %}
-<h1>Showing all Profile</h1>
-<!-- scriptlet code to display the value of the variable `articles` 
-{{ profiles }}
--->
+
 {% block content %}
 <main class="grid-container">
- 
- 
+    <h1>Showing all profiles</h1>
+
+    {# Loop over each Profile from ProfileListView context (profiles). #}
     {% for i in profiles %}
     <article>
- 
- 
+        {# Link to single-profile page only if this profile has an image URL. #}
         {% if i.profile_image_url %}
-
-        <img src="{{i.profile_image_url}}" alt="{{i.profile_image_url}}">
+        <a href="{% url 'show_profile' i.pk %}">
+            <img src="{{ i.profile_image_url }}" alt="{{ i.display_name }}">
         </a>
         {% endif %}
-        
         <div>
-        <h2>{{i.display_name}}</h2>
-        
-        <p>
-        {{i.bio_text}}
-        </p>
+            <p><strong>Username:</strong> {{ i.username }}</p>
+            <h2>{{ i.display_name }}</h2>
+            <p>{{ i.bio_text }}</p>
         </div>
     </article>
- 
- 
     {% endfor %}
 </main>
 {% endblock %}
