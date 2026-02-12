@@ -1,0 +1,22 @@
+<!-- blog/templates/blog/base.html -->
+{% load static %}
+<html>
+    <head>
+        <title>Insta</title>
+        <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Profiles</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'show_all_profiles' %}">Show All Profiles</a></li>
+                </ul>
+            </nav>
+        </header>
+    
+    {% block content %}
+    {% endblock %}    
+  
+    </body>
+</html>
