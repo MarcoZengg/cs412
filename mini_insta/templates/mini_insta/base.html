@@ -3,26 +3,36 @@
 {# Description: Base template for mini_insta. Provides document structure, #}
 {#              CSS link, header with nav, content block, and footer. #}
 {% load static %}
-<html>
-    <head>
-        <title>Mini Insta</title>
-        <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
-    </head>
-    <body>
-        <header>
-            <h1>Profiles</h1>
-            <nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mini Insta{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'mini_insta.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'show_all_profiles' %}" class="logo">Mini Insta</a>
+            <nav class="site-nav" aria-label="Main navigation">
                 <ul>
-                    <li><a href="{% url 'show_all_profiles' %}">Show All Profiles</a></li>
+                    <li><a href="{% url 'show_all_profiles' %}">All profiles</a></li>
                 </ul>
             </nav>
-        </header>
+        </div>
+    </header>
 
+    <div class="page-wrapper">
         {% block content %}
         {% endblock %}
+    </div>
 
-        <footer>
-            <p><a href="{% url 'show_all_profiles' %}">Back to Show All Profiles</a></p>
-        </footer>
-    </body>
+    <footer class="site-footer">
+        <p><a href="{% url 'show_all_profiles' %}">← Back to all profiles</a></p>
+        {% if profile %}
+        <p><a href="{% url 'create_post' profile.pk %}">Create a post</a></p>
+        {% endif %}
+    </footer>
+</body>
 </html>

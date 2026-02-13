@@ -1,23 +1,33 @@
-<!-- blog/templates/blog/base.html -->
+<!-- blog/base.html -->
 {% load static %}
+ 
+ 
 <html>
     <head>
-        <title>Blog</title>
+        <title>Our Blog</title>
         <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
     </head>
+ 
+ 
     <body>
-        <header>
-            <h1>Blog</h1>
+        <head>
+            <h1>Our Blog</h1>
             <nav>
                 <ul>
-                    <li><a href="{% url 'show_all' %}">Show All</a></li>
                     <li><a href="{% url 'random' %}">Random</a></li>
+                    <li><a href="{% url 'show_all' %}">Show All</a></li>
+                    <li><a href="{% url 'create_article' %}">Create</a></li>
                 </ul>
             </nav>
-        </header>
-    
-    {% block content %}
-    {% endblock %}    
-  
+        </head>
+ 
+ 
+        <!-- substitute in the specific content here -->
+        {% block content %}
+        {% endblock %}
+ 
+ 
     </body>
+ 
+ 
 </html>

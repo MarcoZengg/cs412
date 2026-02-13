@@ -1,4 +1,3 @@
-<!-- blog/templates/blog/article.html -->
 {% extends 'blog/base.html' %}
 <h1>{{article.title}}</h1>
  
@@ -21,5 +20,19 @@
     </article>
  
  
+    <div>
+    <h2>Comments</h2>
+    <h3><a href="{% url 'create_comment' article.pk %}">Create a comment</a></h3>
+    {% for comment in article.get_comments %}
+    <article>
+        <div>
+        <strong>by {{ comment.author }} at {{ comment.published }}</strong>
+        <p>{{ comment.text }}</p>
+        </div>
+    </article>
+    {% endfor %}
+</div>
 </main>
 {% endblock %}
+
+ 

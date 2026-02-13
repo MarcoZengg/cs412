@@ -1,0 +1,27 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <article class="post-detail card">
+        <div class="post-detail-caption">
+            <p class="post-caption-lead">{{ post.caption }}</p>
+            <time class="post-detail-time" datetime="{{ post.timestamp|date:'c' }}">{{ post.timestamp|date:"F j, Y \a\t g:i A" }}</time>
+        </div>
+        <div class="post-gallery">
+            {% with post.get_all_photos as photos %}
+            {% if photos %}
+            {% for photo in photos %}
+            <figure class="post-photo">
+                <img src="{{ photo.image_url }}" alt="Post image {{ forloop.counter }}">
+            </figure>
+            {% endfor %}
+            {% else %}
+            <figure class="post-photo post-photo-placeholder">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" alt="No image available">
+            </figure>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </article>
+</main>
+{% endblock %}

@@ -5,25 +5,30 @@
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
-<main class="grid-container">
-    <h1>Showing all profiles</h1>
+<main class="main-content">
+    <h1 class="page-title">Profiles</h1>
+    <p class="page-lead">Choose a profile to view their posts.</p>
 
-    {# Loop over each Profile from ProfileListView context (profiles). #}
-    {% for i in profiles %}
-    <article>
-        {# Link to single-profile page only if this profile has an image URL. #}
-        {% if i.profile_image_url %}
-        <a href="{% url 'show_profile' i.pk %}">
-            <img src="{{ i.profile_image_url }}" alt="{{ i.display_name }}">
+    <div class="card-grid">
+        {% for i in profiles %}
+        <a href="{% url 'show_profile' i.pk %}" class="card card-link">
+            <div class="card-image">
+                {% if i.profile_image_url %}
+                <img src="{{ i.profile_image_url }}" alt="{{ i.display_name }}">
+                {% else %}
+                <div class="card-image-placeholder" aria-hidden="true">No photo</div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">{{ i.display_name }}</h2>
+                <p class="card-meta">@{{ i.username }}</p>
+                {% if i.bio_text %}
+                <p class="card-text">{{ i.bio_text }}</p>
+                {% endif %}
+            </div>
         </a>
-        {% endif %}
-        <div>
-            <p><strong>Username:</strong> {{ i.username }}</p>
-            <h2>{{ i.display_name }}</h2>
-            <p>{{ i.bio_text }}</p>
-        </div>
-    </article>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </main>
 {% endblock %}
  

@@ -5,19 +5,51 @@
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
-<main class="grid-container">
-    <h1>{{ profile.display_name }}</h1>
-
-    <article class="featured">
-        {# Show image only if profile has a profile_image_url set. #}
-        {% if profile.profile_image_url %}
-        <img src="{{ profile.profile_image_url }}" alt="{{ profile.display_name }}" style="max-width: 100%; width: 400px;">
-        {% endif %}
-        <div>
-            <p><strong>Username:</strong> {{ profile.username }}</p>
-            <p><strong>Bio:</strong> {{ profile.bio_text }}</p>
-            <p><strong>Joined:</strong> {{ profile.join_date|date:"F j, Y" }}</p>
+<main class="main-content">
+    <article class="profile-header card">
+        <div class="profile-avatar">
+            {% if profile.profile_image_url %}
+            <img src="{{ profile.profile_image_url }}" alt="{{ profile.display_name }}">
+            {% else %}
+            <div class="avatar-placeholder">{{ profile.display_name|slice:":1" }}</div>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-name">{{ profile.display_name }}</h1>
+            <p class="profile-username">@{{ profile.username }}</p>
+            {% if profile.bio_text %}
+            <p class="profile-bio">{{ profile.bio_text }}</p>
+            {% endif %}
+            <p class="profile-meta">Joined {{ profile.join_date|date:"F j, Y" }}</p>
         </div>
     </article>
+
+    <section class="posts-section">
+        <div class="section-header">
+            <h2>Posts</h2>
+            <a href="{% url 'create_post' profile.pk %}" class="btn btn-primary">New post</a>
+        </div>
+        <div class="card-grid">
+        {% for i in profile.get_all_posts %}
+        <a href="{% url 'show_post' i.pk %}" class="card card-link post-preview">
+            <div class="post-preview-image">
+                {% with i.get_all_photos as photos %}
+                {% if photos %}
+                <img src="{{ photos.0.image_url }}" alt="">
+                {% else %}
+                <div class="card-image-placeholder">No image</div>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="post-preview-body">
+                <p class="post-caption">{{ i.caption }}</p>
+                <time class="post-time" datetime="{{ i.timestamp|date:'c' }}">{{ i.timestamp|date:"M j, Y g:i A" }}</time>
+            </div>
+        </a>
+        {% empty %}
+        <p class="empty-state">No posts yet. <a href="{% url 'create_post' profile.pk %}">Create your first post</a>.</p>
+        {% endfor %}
+        </div>
+    </section>
 </main>
 {% endblock %}

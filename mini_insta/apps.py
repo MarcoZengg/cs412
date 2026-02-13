@@ -8,4 +8,5 @@ from django.apps import AppConfig
 
 class MiniInstaConfig(AppConfig):
     """Configuration for the mini_insta application."""
+
     name = 'mini_insta'
