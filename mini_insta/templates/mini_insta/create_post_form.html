@@ -3,9 +3,9 @@
 {% block content %}
 <main class="main-content">
     <h1 class="page-title">New post</h1>
-    <p class="page-lead">Add a caption and optional image URL for your post.</p>
+    <p class="page-lead">Add a caption and optional image files for your post.</p>
 
-    <form method="POST" action="{% url 'create_post' profile.pk %}" class="form-card card">
+    <form method="post" action="{% url 'create_post' profile.pk %}" class="form-card card" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-body">
             {% for field in form %}
@@ -18,9 +18,8 @@
             </div>
             {% endfor %}
             <div class="form-group">
-                <label for="photo_url">Photo URL <span class="form-optional">(optional)</span></label>
-                <input type="url" name="photo_url" id="photo_url" placeholder="https://example.com/image.jpg">
-                <span class="form-hint">Paste a link to an image on the web.</span>
+                <label for="files">Select photos <span class="form-optional">(optional)</span></label>
+                <input type="file" name="files" id="files" multiple accept="image/*">
             </div>
         </div>
         <div class="form-actions">

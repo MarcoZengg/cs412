@@ -12,7 +12,9 @@
             {% if photos %}
             {% for photo in photos %}
             <figure class="post-photo">
-                <img src="{{ photo.image_url }}" alt="Post image {{ forloop.counter }}">
+                {% if photo.get_image_url %}
+                <img src="{{ photo.get_image_url }}" alt="Post image {{ forloop.counter }}">
+                {% endif %}
             </figure>
             {% endfor %}
             {% else %}

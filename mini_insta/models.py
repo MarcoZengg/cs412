@@ -62,15 +62,29 @@ class Post(models.Model):
 # Photo: one image associated with a single Post.
 # -----------------------------------------------------------------------------
 class Photo(models.Model):
-    """One image URL attached to a post; related to Post via foreign key."""
+    """One image attached to a post (via URL or uploaded file); related to Post via foreign key."""
 
     # The post this photo belongs to (required for relationship):
     post = models.ForeignKey("Post", on_delete=models.CASCADE)
-    # URL of the image on the web:
-    image_url = models.URLField(blank=False)
+    # URL of the image on the web (kept for backwards-compatibility with existing Photo):
+    image_url = models.URLField(blank=True)
+    # Image file stored in Django media directory (optional alternative to image_url):
+    image_file = models.ImageField(blank=True, upload_to='mini_insta/photos/')
     # Set automatically when the photo record is created:
     timestamp = models.DateTimeField(auto_now=True)
 
+    def get_image_url(self):
+        """Return the URL to display this image: image_url if set, else image_file.url."""
+        if self.image_url:
+            return self.image_url
+        if self.image_file:
+            return self.image_file.url
+        return ''
+
     def __str__(self):
-        """Return a string representation of this Photo object."""
+        """Return a string representation consistent with how the image is stored."""
+        if self.image_url:
+            return f'image (URL) by post {self.post} at {self.timestamp}'
+        if self.image_file:
+            return f'image (file) by post {self.post} at {self.timestamp}'
         return f'image by post {self.post} at {self.timestamp}'

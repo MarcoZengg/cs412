@@ -1,0 +1,23 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<h2>Update an Article for the Blog</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+    {% for field in form %}
+    <tr>
+        <th>{{ field.label_tag }}</th>
+        <td>{{ field }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td>
+            <input type="submit" name="update_article" value="Update Article!">
+        </td>
+    </tr>
+    </table>
+</form>
+{% endblock %}

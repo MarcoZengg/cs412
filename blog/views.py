@@ -2,10 +2,11 @@ from django.shortcuts import render
 
 # Create your views here.
  
-from .models import Article
-from django.views.generic import ListView, DetailView, CreateView
+from .models import Article, Comment
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic.edit import DeleteView
 import random
-from .forms import CreateArticleForm, CreateCommentForm ## new
+from .forms import CreateArticleForm, CreateCommentForm, UpdateArticleForm
 from django.urls import reverse
 
 
@@ -49,6 +50,16 @@ class CreateArticleView(CreateView):
  
     form_class = CreateArticleForm
     template_name = "blog/create_article_form.html"
+
+    def form_valid(self, form):
+        '''
+        Handle the form submission to create a new Article object.
+        '''
+        print(f'CreateArticleView: form.cleaned_data={form.cleaned_data}')
+ 
+ 
+		# delegate work to the superclass version of this method
+        return super().form_valid(form)
 
 class CreateCommentView(CreateView):
     '''A view to create a new comment and save it to the database.'''
@@ -110,4 +121,34 @@ class CreateCommentView(CreateView):
         pk = self.kwargs['pk']
         # call reverse to generate the URL for this Article
         return reverse('article', kwargs={'pk':pk})
+
+
+class DeleteCommentView(DeleteView):
+    '''A view to delete a comment and remove it from the database.'''
+
+    model = Comment
+    template_name = "blog/delete_comment_form.html"
+    context_object_name = 'comment'
+
+    def get_success_url(self):
+        '''Return the URL to redirect to after the delete.'''
+        # Use self.object (the comment just deleted) while still in memory to get the article pk
+        return reverse('article', kwargs={'pk': self.object.article.pk})
+
+
+class UpdateArticleView(UpdateView):
+    '''A view to update an Article and save it to the database.'''
+
+    model = Article
+    form_class = UpdateArticleForm
+    template_name = "blog/update_article_form.html"
+    context_object_name = 'article'
+    
+    def form_valid(self, form):
+        '''
+        Handle the form submission to create a new Article object.
+        '''
+        print(f'UpdateArticleView: form.cleaned_data={form.cleaned_data}')
  
+ 
+        return super().form_valid(form)

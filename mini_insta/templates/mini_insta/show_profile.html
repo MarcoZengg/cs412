@@ -34,8 +34,8 @@
         <a href="{% url 'show_post' i.pk %}" class="card card-link post-preview">
             <div class="post-preview-image">
                 {% with i.get_all_photos as photos %}
-                {% if photos %}
-                <img src="{{ photos.0.image_url }}" alt="">
+                {% if photos and photos.0.get_image_url %}
+                <img src="{{ photos.0.get_image_url }}" alt="">
                 {% else %}
                 <div class="card-image-placeholder">No image</div>
                 {% endif %}

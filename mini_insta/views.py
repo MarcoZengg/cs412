@@ -54,27 +54,29 @@ class CreatePostView(CreateView):
     def get_context_data(self, **kwargs):
         """Add the Profile (from URL pk) to context so the template can use it."""
         context = super().get_context_data(**kwargs)
-        # Retrieve the profile pk from the URL so we can look up the Profile:
         pk = self.kwargs['pk']
         profile = Profile.objects.get(pk=pk)
         context['profile'] = profile
         return context
 
     def form_valid(self, form):
-        """Attach Profile to the Post, save, then create Photo if URL was given."""
-        # Attach the correct Profile to the Post (required before save):
+        """Attach Profile to the Post, save, then create Photo(s) from uploaded files."""
         pk = self.kwargs['pk']
         profile = Profile.objects.get(pk=pk)
         form.instance.profile = profile
 
-        # Save the post so we have a post instance for the Photo FK:
         response = super().form_valid(form)
         post = form.instance
 
-        # If the user provided a photo URL, create one Photo linked to this post:
-        photo_url = self.request.POST.get('photo_url', '').strip()
-        if photo_url:
-            Photo.objects.create(post=post, image_url=photo_url)
+        # Previously: create Photo from image URL (commented out).
+        # photo_url = self.request.POST.get('photo_url', '').strip()
+        # if photo_url:
+        #     Photo.objects.create(post=post, image_url=photo_url)
+
+        # Create one Photo per uploaded file (from input name="files" with multiple).
+        files = self.request.FILES.getlist('files')
+        for f in files:
+            Photo.objects.create(post=post, image_file=f)
 
         return response
 

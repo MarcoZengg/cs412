@@ -1,38 +1,36 @@
 {% extends 'blog/base.html' %}
-<h1>{{article.title}}</h1>
- 
- 
+
 {% block content %}
+<h1>{{ article.title }}</h1>
 <main class="grid-container">
-    
+
     <article class="featured">
-        {% if article.image_url %}
-		<img src="{{article.image_url}}" alt="{{article.image_url}}">
-		{% endif %}
-        
+        {% if article.image_file %}
+        <img src="{{ article.image_file.url }}" alt="{{ article.title }}">
+        {% endif %}
+
         <div>
-        <h2>{{article.title}}</h2>
-        <strong>by {{article.author}} at {{article.published}}</strong>
-        <p>
-        {{article.text}}
-        </p>
+            <h2>{{ article.title }}</h2>
+            <strong>by {{ article.author }} at {{ article.published }}</strong>
+            <p>{{ article.text }}</p>
         </div>
     </article>
- 
- 
+
     <div>
-    <h2>Comments</h2>
-    <h3><a href="{% url 'create_comment' article.pk %}">Create a comment</a></h3>
-    {% for comment in article.get_comments %}
-    <article>
-        <div>
-        <strong>by {{ comment.author }} at {{ comment.published }}</strong>
-        <p>{{ comment.text }}</p>
-        </div>
-    </article>
-    {% endfor %}
-</div>
+        <h2>Comments</h2>
+
+        <h3><a href="{% url 'update_article' article.pk %}">Update Article</a></h3>
+        <h3><a href="{% url 'create_comment' article.pk %}">Create a comment</a></h3>
+
+        {% for c in article.get_comments %}
+        <article>
+            <div>
+                <strong>by {{ c.author }} at {{ c.published }}</strong>
+                <p>{{ c.text }}</p>
+                <a href="{% url 'delete_comment' c.pk %}">Delete</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
 </main>
 {% endblock %}
-
- 
