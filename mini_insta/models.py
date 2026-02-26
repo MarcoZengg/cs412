@@ -5,6 +5,7 @@
 #              for use in views and templates.
 
 from django.db import models
+from django.urls import reverse
 
 
 # -----------------------------------------------------------------------------
@@ -32,6 +33,10 @@ class Profile(models.Model):
         """Return all Posts for this Profile, ordered by timestamp (newest first)."""
         # Filter posts by this profile and order so newest appears first:
         return Post.objects.filter(profile=self).order_by('-timestamp')
+
+    def get_absolute_url(self):
+        """Return the URL for this profile (used by UpdateView redirect after save)."""
+        return reverse('show_profile', kwargs={'pk': self.pk})
 
 
 # -----------------------------------------------------------------------------

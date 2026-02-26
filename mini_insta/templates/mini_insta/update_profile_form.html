@@ -1,0 +1,26 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="page-title">Update profile</h1>
+
+    <form method="post" action="{% url 'update_profile' profile.pk %}" class="form-card card">
+        {% csrf_token %}
+        <div class="form-body">
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <span class="form-hint">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Update profile</button>
+            <a href="{% url 'show_profile' profile.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</main>
+{% endblock %}

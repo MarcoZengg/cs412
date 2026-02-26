@@ -1,0 +1,26 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h2>Update post</h2>
+
+    <form method="post" action="{% url 'update_post' post.pk %}">
+        {% csrf_token %}
+        <table>
+        {% for field in form %}
+        <tr>
+            <th>{{ field.label_tag }}</th>
+            <td>{{ field }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td>
+                <button type="submit" class="btn btn-primary">Update post</button>
+                <a href="{% url 'show_post' post.pk %}" class="btn btn-secondary">Cancel</a>
+            </td>
+        </tr>
+        </table>
+    </form>
+</main>
+{% endblock %}

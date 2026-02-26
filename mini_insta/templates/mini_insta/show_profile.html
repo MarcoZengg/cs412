@@ -14,6 +14,9 @@
             <div class="avatar-placeholder">{{ profile.display_name|slice:":1" }}</div>
             {% endif %}
         </div>
+        <div>
+            <a href="{% url 'update_profile' profile.pk %}" class="btn btn-primary">Update Profile</a>
+        </div>
         <div class="profile-info">
             <h1 class="profile-name">{{ profile.display_name }}</h1>
             <p class="profile-username">@{{ profile.username }}</p>

@@ -4,8 +4,8 @@
 #              profile, show one post, and create a new post (with form).
 
 from .models import Profile, Post, Photo
-from django.views.generic import ListView, DetailView, CreateView
-from .forms import CreatePostForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
 
 
@@ -82,4 +82,43 @@ class CreatePostView(CreateView):
 
     def get_success_url(self):
         """Redirect to the new Post's detail page after successful creation."""
+        return reverse('show_post', kwargs={'pk': self.object.pk})
+
+
+class UpdateProfileView(UpdateView):
+    """Update an existing Profile; redirect uses Profile.get_absolute_url."""
+
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = "mini_insta/update_profile_form.html"
+    context_object_name = 'profile'
+
+class DeletePostView(DeleteView):
+    """Delete a Post; redirect to the post's profile page after delete."""
+
+    model = Post
+    template_name = "mini_insta/delete_post_form.html"
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        """Provide post (Post to delete) and profile (owner) for the template."""
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.object.profile
+        return context
+
+    def get_success_url(self):
+        """Redirect to the profile page of the post we just deleted."""
+        return reverse('show_profile', kwargs={'pk': self.object.profile.pk})
+
+
+class UpdatePostView(UpdateView):
+    """Update a Post (caption); redirect to that post's detail page after save."""
+
+    model = Post
+    form_class = UpdatePostForm
+    template_name = "mini_insta/update_post_form.html"
+    context_object_name = 'post'
+
+    def get_success_url(self):
+        """Redirect to the show_post page for this post."""
         return reverse('show_post', kwargs={'pk': self.object.pk})
