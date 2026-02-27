@@ -4,8 +4,11 @@
 #              so staff can create and edit records via /admin/.
 
 from django.contrib import admin
-from .models import Photo, Profile, Post
+from .models import Photo, Profile, Post, Follow, Comment, Like
 
 admin.site.register(Profile)
 admin.site.register(Post)
 admin.site.register(Photo)
+admin.site.register(Follow)
+admin.site.register(Comment)
+admin.site.register(Like)

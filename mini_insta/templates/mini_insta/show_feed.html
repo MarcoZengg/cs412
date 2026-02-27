@@ -1,0 +1,58 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="page-title">Feed for {{ profile.display_name }}</h1>
+    <p class="page-lead">Posts from people you follow · <a href="{% url 'show_profile' profile.pk %}">Back to profile</a></p>
+
+    {% for post in posts %}
+    <article class="post-detail card feed-post">
+        <div class="post-author">
+            {% if post.profile.profile_image_url %}
+            <img src="{{ post.profile.profile_image_url }}" alt="{{ post.profile.display_name }}" class="post-author-avatar">
+            {% else %}
+            <div class="avatar-placeholder post-author-avatar">{{ post.profile.display_name|slice:":1" }}</div>
+            {% endif %}
+            <a href="{% url 'show_profile' post.profile.pk %}" class="post-author-name">{{ post.profile.display_name }}</a>
+            <time class="post-detail-time" datetime="{{ post.timestamp|date:'c' }}">{{ post.timestamp|date:"F j, Y g:i A" }}</time>
+        </div>
+        <div class="post-detail-caption">
+            {% with post.get_likes as likes %}
+            <p class="post-likes">{{ likes|length }} like{{ likes|length|pluralize }}</p>
+            {% endwith %}
+            <p class="post-caption-lead">{{ post.caption }}</p>
+        </div>
+        <div class="post-gallery">
+            {% with post.get_all_photos as photos %}
+            {% if photos and photos.0.get_image_url %}
+            <figure class="post-photo">
+                <img src="{{ photos.0.get_image_url }}" alt="Post image">
+            </figure>
+            {% elif photos %}
+            <figure class="post-photo post-photo-placeholder">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" alt="No image available">
+            </figure>
+            {% endif %}
+            {% endwith %}
+        </div>
+        <p><a href="{% url 'show_post' post.pk %}">View post</a></p>
+        <section class="post-comments">
+            <h3>Comments</h3>
+            {% for comment in post.get_all_comments %}
+            <div class="comment card">
+                <p class="comment-meta">
+                    <a href="{% url 'show_profile' comment.profile.pk %}">{{ comment.profile.display_name }}</a>
+                    <time datetime="{{ comment.timestamp|date:'c' }}">{{ comment.timestamp|date:"M j, g:i A" }}</time>
+                </p>
+                <p class="comment-text">{{ comment.text }}</p>
+            </div>
+            {% empty %}
+            <p class="empty-state">No comments.</p>
+            {% endfor %}
+        </section>
+    </article>
+    {% empty %}
+    <p class="empty-state">No posts in your feed yet. <a href="{% url 'show_following' profile.pk %}">Follow some people</a> to see their posts here.</p>
+    {% endfor %}
+</main>
+{% endblock %}

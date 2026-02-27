@@ -14,6 +14,9 @@ from .views import (
     UpdateProfileView,
     DeletePostView,
     UpdatePostView,
+    ShowFollowingDetailView,
+    ShowFollowersDetailView,
+    PostFeedListView,
 )
 
 # URL patterns: map path to view and optional name for reverse().
@@ -25,8 +28,9 @@ urlpatterns = [
     path('profile/<int:pk>/update', UpdateProfileView.as_view(), name='update_profile'),
     path('post/<int:pk>/delete', DeletePostView.as_view(), name='delete_post'),
     path('post/<int:pk>/update', UpdatePostView.as_view(), name='update_post'),
-
-
+    path('profile/<int:pk>/followers', ShowFollowersDetailView.as_view(), name='show_followers'),
+    path('profile/<int:pk>/following', ShowFollowingDetailView.as_view(), name='show_following'),
+    path('profile/<int:pk>/feed', PostFeedListView.as_view(), name='show_feed'),
 ]
 # Serve static files (e.g. CSS) in development.
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

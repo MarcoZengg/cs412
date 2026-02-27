@@ -122,3 +122,34 @@ class UpdatePostView(UpdateView):
     def get_success_url(self):
         """Redirect to the show_post page for this post."""
         return reverse('show_post', kwargs={'pk': self.object.pk})
+
+class ShowFollowersDetailView(DetailView):
+    """DetailView for a Profile; template shows this profile's followers."""
+
+    model = Profile
+    template_name = "mini_insta/show_followers.html"
+    context_object_name = 'profile'
+
+
+class ShowFollowingDetailView(DetailView):
+    """DetailView for a Profile; template shows who this profile follows."""
+
+    model = Profile
+    template_name = "mini_insta/show_following.html"
+    context_object_name = 'profile'
+
+class PostFeedListView(ListView):
+    """List view of the post feed for the profile (pk from URL); posts from profiles they follow."""
+
+    template_name = "mini_insta/show_feed.html"
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=pk)
+        return profile.get_post_feed()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = Profile.objects.get(pk=self.kwargs['pk'])
+        return context

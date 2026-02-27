@@ -38,6 +38,28 @@ class Profile(models.Model):
         """Return the URL for this profile (used by UpdateView redirect after save)."""
         return reverse('show_profile', kwargs={'pk': self.pk})
 
+    def get_followers(self):
+        """Return a list of Profiles who follow this profile (subscribers who see this profile's Posts)."""
+        follows = Follow.objects.filter(profile=self)
+        return [f.follower_profile for f in follows]
+
+    def get_num_followers(self):
+        return (len(self.get_followers()))
+    
+    def get_following(self):
+        """Return a list of Profiles this profile follows (publishers whose Posts this profile is subscribed to)."""
+        follows = Follow.objects.filter(follower_profile=self)
+        return [f.profile for f in follows]
+
+    def get_num_following(self):
+        return (len(self.get_following()))
+
+    def get_post_feed(self):
+        """Return Posts from profiles this profile follows, most recent first."""
+        followed_profiles = [f.profile for f in Follow.objects.filter(follower_profile=self)]
+        return Post.objects.filter(profile__in=followed_profiles).order_by('-timestamp')
+
+
 
 # -----------------------------------------------------------------------------
 # Post: one post belonging to a single Profile; has many Photos.
@@ -61,6 +83,15 @@ class Post(models.Model):
         # Filter photos by this post so the template can display them:
         photos = Photo.objects.filter(post=self)
         return photos
+        
+    def get_all_comments(self):
+        """Return all Comments on this Post, ordered by timestamp (oldest first)."""
+        return Comment.objects.filter(post=self).order_by('timestamp')
+
+    def get_likes(self):
+        """Return all Likes on this Post."""
+        return Like.objects.filter(post=self)
+
 
 
 # -----------------------------------------------------------------------------
@@ -93,3 +124,64 @@ class Photo(models.Model):
         if self.image_file:
             return f'image (file) by post {self.post} at {self.timestamp}'
         return f'image by post {self.post} at {self.timestamp}'
+
+
+# -----------------------------------------------------------------------------
+# Follow: edge connecting two Profiles (follower follows a profile).
+# -----------------------------------------------------------------------------
+class Follow(models.Model):
+    """Encapsulates one profile following another (follower_profile follows profile)."""
+
+    # Profile being followed (the "publisher"):
+    profile = models.ForeignKey(
+        "Profile", on_delete=models.CASCADE, related_name="profile"
+    )
+    # Profile doing the following (the "subscriber"):
+    follower_profile = models.ForeignKey(
+        "Profile", on_delete=models.CASCADE, related_name="follower_profile"
+    )
+    # When the follow relationship was created:
+    timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        """e.g. 'Angela Merkel follows Taylor Swift'."""
+        return f'{self.follower_profile.display_name} follows {self.profile.display_name}'
+
+
+# -----------------------------------------------------------------------------
+# Comment: one Profile's response or commentary on a Post.
+# -----------------------------------------------------------------------------
+class Comment(models.Model):
+    """One profile's comment on a post."""
+
+    # Post this comment is on:
+    post = models.ForeignKey("Post", on_delete=models.CASCADE)
+    # Profile who wrote the comment:
+    profile = models.ForeignKey("Profile", on_delete=models.CASCADE)
+    # When the comment was created:
+    timestamp = models.DateTimeField(auto_now=True)
+    # The comment text:
+    text = models.TextField(blank=False)
+
+    def __str__(self):
+        """Short string for admin/shell: profile and snippet of text."""
+        snippet = self.text[:50] + "..." if len(self.text) > 50 else self.text
+        return f'{self.profile.display_name} on post {self.post.pk}: {snippet}'
+
+
+# -----------------------------------------------------------------------------
+# Like: one Profile's approval of a Post.
+# -----------------------------------------------------------------------------
+class Like(models.Model):
+    """One profile liking a post."""
+
+    # Post that is liked:
+    post = models.ForeignKey("Post", on_delete=models.CASCADE)
+    # Profile who liked the post:
+    profile = models.ForeignKey("Profile", on_delete=models.CASCADE)
+    # When the like was created:
+    timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        """e.g. 'Angela Merkel likes post 3'."""
+        return f'{self.profile.display_name} likes post {self.post.pk}'

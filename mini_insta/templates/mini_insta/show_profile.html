@@ -24,6 +24,11 @@
             <p class="profile-bio">{{ profile.bio_text }}</p>
             {% endif %}
             <p class="profile-meta">Joined {{ profile.join_date|date:"F j, Y" }}</p>
+            <p class="profile-meta">
+                <a href="{% url 'show_followers' profile.pk %}">{{ profile.get_followers|length }} Followers</a>
+                ·
+                <a href="{% url 'show_following' profile.pk %}">{{ profile.get_following|length }} Following</a>
+            </p>
         </div>
     </article>
 

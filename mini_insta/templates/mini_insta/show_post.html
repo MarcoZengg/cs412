@@ -4,6 +4,9 @@
 <main class="main-content">
     <article class="post-detail card">
         <div class="post-detail-caption">
+            {% with post.get_likes as likes %}
+            <p class="post-likes">{{ likes|length }} like{{ likes|length|pluralize }}</p>
+            {% endwith %}
             <p class="post-caption-lead">{{ post.caption }}</p>
             <time class="post-detail-time" datetime="{{ post.timestamp|date:'c' }}">{{ post.timestamp|date:"F j, Y \a\t g:i A" }}</time>
         </div>
@@ -27,5 +30,20 @@
     </article>
     <a href="{% url 'update_post' post.pk %}">Update Post</a>
     <a href="{% url 'delete_post' post.pk %}">Delete Post</a>
+
+    <section class="post-comments">
+        <h2>Comments</h2>
+        {% for comment in post.get_all_comments %}
+        <div class="comment card">
+            <p class="comment-meta">
+                <a href="{% url 'show_profile' comment.profile.pk %}">{{ comment.profile.display_name }}</a>
+                <time datetime="{{ comment.timestamp|date:'c' }}">{{ comment.timestamp|date:"M j, Y g:i A" }}</time>
+            </p>
+            <p class="comment-text">{{ comment.text }}</p>
+        </div>
+        {% empty %}
+        <p class="empty-state">No comments yet.</p>
+        {% endfor %}
+    </section>
 </main>
 {% endblock %}

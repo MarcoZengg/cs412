@@ -1,0 +1,24 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="page-title">Followers of {{ profile.display_name }}</h1>
+    <p class="page-lead">Profiles who follow @{{ profile.username }}</p>
+
+    <div class="card-grid">
+        {% for follower in profile.get_followers %}
+        <a href="{% url 'show_profile' follower.pk %}" class="card card-link">
+            <div class="card-body">
+                <h2 class="card-title">{{ follower.display_name }}</h2>
+                <p class="card-meta">@{{ follower.username }}</p>
+                {% if follower.bio_text %}
+                <p class="card-text">{{ follower.bio_text }}</p>
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <p class="empty-state">No followers yet.</p>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

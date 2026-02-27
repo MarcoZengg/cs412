@@ -17,7 +17,11 @@
             <a href="{% url 'show_all_profiles' %}" class="logo">Mini Insta</a>
             <nav class="site-nav" aria-label="Main navigation">
                 <ul>
+                    <li><a href="{% if profile %}{% url 'show_feed' profile.pk %}{% else %}{% url 'show_all_profiles' %}{% endif %}">Home</a></li>
                     <li><a href="{% url 'show_all_profiles' %}">All profiles</a></li>
+                    {% if profile %}
+                    <li><a href="{% url 'show_profile' profile.pk %}">Profile</a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>
