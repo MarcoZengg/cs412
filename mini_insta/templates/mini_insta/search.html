@@ -1,0 +1,16 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="page-title">Search</h1>
+    <p class="page-lead">Search for profiles and posts.</p>
+
+    <form action="{% url 'search' profile.pk %}" method="get" class="form-card card">
+        <div class="form-group">
+            <label for="q">Search</label>
+            <textarea name="q" id="q" rows="3" placeholder="Enter search query..." class="form-control">{{ query|default:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</main>
+{% endblock %}

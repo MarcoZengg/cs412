@@ -1,0 +1,36 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="page-title">Search results for "{{ query }}"</h1>
+    <p class="page-lead"><a href="{% url 'search' profile.pk %}">Search again</a></p>
+
+    <section class="search-section">
+        <h2>Profiles</h2>
+        {% for p in profiles %}
+        <div class="card">
+            <a href="{% url 'show_profile' p.pk %}">{{ p.display_name }}</a>
+            <p class="card-meta">@{{ p.username }}</p>
+            {% if p.bio_text %}
+            <p class="card-text">{{ p.bio_text }}</p>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p class="empty-state">No matching profiles.</p>
+        {% endfor %}
+    </section>
+
+    <section class="search-section">
+        <h2>Posts</h2>
+        {% for post in posts %}
+        <div class="card">
+            <p class="card-meta"><a href="{% url 'show_profile' post.profile.pk %}">{{ post.profile.display_name }}</a> · {{ post.timestamp|date:"M j, Y g:i A" }}</p>
+            <p class="post-caption-lead">{{ post.caption }}</p>
+            <p><a href="{% url 'show_post' post.pk %}">View post</a></p>
+        </div>
+        {% empty %}
+        <p class="empty-state">No matching posts.</p>
+        {% endfor %}
+    </section>
+</main>
+{% endblock %}

@@ -5,6 +5,8 @@
 
 from .models import Profile, Post, Photo
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.db.models import Q
+from django.shortcuts import render
 from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
 
@@ -153,3 +155,37 @@ class PostFeedListView(ListView):
         context = super().get_context_data(**kwargs)
         context['profile'] = Profile.objects.get(pk=self.kwargs['pk'])
         return context
+
+class SearchView(ListView):
+    """Search Profiles and Posts by text; form on search.html, results on search_results.html."""
+
+    template_name = "mini_insta/search_results.html"
+    context_object_name = 'posts'
+
+    def dispatch(self, request, *args, **kwargs):
+        """If query is absent from GET, show search form; otherwise run ListView."""
+        if 'q' not in request.GET:
+            pk = kwargs.get('pk')
+            profile = Profile.objects.get(pk=pk)
+            return render(request, 'mini_insta/search.html', {'profile': profile})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        """Return Posts whose caption contains the query."""
+        query = self.request.GET.get('q', '').strip()
+        return Post.objects.filter(caption__icontains=query).order_by('-timestamp')
+
+    def get_context_data(self, **kwargs):
+        """Add profile, query, and matching profiles to context; posts come from get_queryset."""
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        context['profile'] = Profile.objects.get(pk=pk)
+        query = self.request.GET.get('q', '').strip()
+        context['query'] = query
+        context['profiles'] = Profile.objects.filter(
+            Q(username__icontains=query) |
+            Q(display_name__icontains=query) |
+            Q(bio_text__icontains=query)
+        )
+        return context
+

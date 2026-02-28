@@ -17,6 +17,7 @@ from .views import (
     ShowFollowingDetailView,
     ShowFollowersDetailView,
     PostFeedListView,
+    SearchView,
 )
 
 # URL patterns: map path to view and optional name for reverse().
@@ -31,6 +32,8 @@ urlpatterns = [
     path('profile/<int:pk>/followers', ShowFollowersDetailView.as_view(), name='show_followers'),
     path('profile/<int:pk>/following', ShowFollowingDetailView.as_view(), name='show_following'),
     path('profile/<int:pk>/feed', PostFeedListView.as_view(), name='show_feed'),
+    path('profile/<int:pk>/search', SearchView.as_view(), name='search'),
+
 ]
 # Serve static files (e.g. CSS) in development.
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
