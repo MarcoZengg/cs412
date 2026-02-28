@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'mini_insta.css' %}">
 </head>
 <body>
+    <!-- Site header: logo and main navigation (Home, All profiles, Profile when in context). -->
     <header class="site-header">
         <div class="header-inner">
             <a href="{% url 'show_all_profiles' %}" class="logo">Mini Insta</a>
@@ -27,17 +28,27 @@
         </div>
     </header>
 
+    <!-- Main page content: child templates fill the content block below. -->
     <div class="page-wrapper">
         {% block content %}
         {% endblock %}
     </div>
 
+    <!-- Footer: links to All profiles, Feed, Search, New post, Profile (when profile in context). -->
     <footer class="site-footer">
-        <p><a href="{% url 'show_all_profiles' %}">← Back to all profiles</a></p>
-        {% if profile %}
-        <p><a href="{% url 'search' profile.pk %}">Search</a></p>
-        <p><a href="{% url 'create_post' profile.pk %}">Create a post</a></p>
-        {% endif %}
+        <nav class="footer-nav" aria-label="Footer navigation">
+            <a href="{% url 'show_all_profiles' %}" class="footer-link">All profiles</a>
+            {% if profile %}
+            <span class="footer-sep">|</span>
+            <a href="{% url 'show_feed' profile.pk %}" class="footer-link">Feed</a>
+            <span class="footer-sep">|</span>
+            <a href="{% url 'search' profile.pk %}" class="footer-link">Search</a>
+            <span class="footer-sep">|</span>
+            <a href="{% url 'create_post' profile.pk %}" class="footer-link">New post</a>
+            <span class="footer-sep">|</span>
+            <a href="{% url 'show_profile' profile.pk %}" class="footer-link">Profile</a>
+            {% endif %}
+        </nav>
     </footer>
 </body>
 </html>

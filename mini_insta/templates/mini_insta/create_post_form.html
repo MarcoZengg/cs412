@@ -1,3 +1,7 @@
+{# File: create_post_form.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Form to create a new Post. Uses CreatePostForm; caption from #}
+{#              form, photos from file input (name="files", multiple). #}
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
@@ -5,6 +9,7 @@
     <h1 class="page-title">New post</h1>
     <p class="page-lead">Add a caption and optional image files for your post.</p>
 
+    <!-- Create post form: POST to create_post; enctype required for file upload. -->
     <form method="post" action="{% url 'create_post' profile.pk %}" class="form-card card" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-body">
@@ -17,6 +22,7 @@
                 {% endif %}
             </div>
             {% endfor %}
+            <!-- Optional multi-file image upload; view reads request.FILES.getlist('files'). -->
             <div class="form-group">
                 <label for="files">Select photos <span class="form-optional">(optional)</span></label>
                 <input type="file" name="files" id="files" multiple accept="image/*">

@@ -6,6 +6,7 @@
 
 {% block content %}
 <main class="main-content">
+    <!-- Profile header: avatar, update link, name, username, bio, join date, followers/following. -->
     <article class="profile-header card">
         <div class="profile-avatar">
             {% if profile.profile_image_url %}
@@ -32,6 +33,7 @@
         </div>
     </article>
 
+    <!-- This profile's posts; each card links to show_post. -->
     <section class="posts-section">
         <div class="section-header">
             <h2>Posts</h2>

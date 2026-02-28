@@ -1,9 +1,14 @@
+{# File: update_profile_form.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Form to update a Profile (display_name, bio_text, profile_image_url). #}
+{#              Uses UpdateProfileForm. Redirect uses Profile.get_absolute_url. #}
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
 <main class="main-content">
     <h1 class="page-title">Update profile</h1>
 
+    <!-- POST to update_profile; UpdateProfileView saves and redirects to show_profile. -->
     <form method="post" action="{% url 'update_profile' profile.pk %}" class="form-card card">
         {% csrf_token %}
         <div class="form-body">

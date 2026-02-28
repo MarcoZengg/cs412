@@ -1,7 +1,12 @@
+{# File: show_post.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Single post detail: caption, photos, likes, update/delete links, #}
+{#              and comments. Context: post. #}
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
 <main class="main-content">
+    <!-- Post content: likes count, caption, timestamp, photo gallery. -->
     <article class="post-detail card">
         <div class="post-detail-caption">
             {% with post.get_likes as likes %}
@@ -10,6 +15,7 @@
             <p class="post-caption-lead">{{ post.caption }}</p>
             <time class="post-detail-time" datetime="{{ post.timestamp|date:'c' }}">{{ post.timestamp|date:"F j, Y \a\t g:i A" }}</time>
         </div>
+        <!-- Photos for this post (post.get_all_photos); placeholder if no image URL. -->
         <div class="post-gallery">
             {% with post.get_all_photos as photos %}
             {% if photos %}
@@ -28,9 +34,13 @@
             {% endwith %}
         </div>
     </article>
-    <a href="{% url 'update_post' post.pk %}">Update Post</a>
-    <a href="{% url 'delete_post' post.pk %}">Delete Post</a>
+    <!-- Links to update or delete this post. -->
+    <div class="post-actions">
+        <a href="{% url 'update_post' post.pk %}" class="btn btn-primary">Update post</a>
+        <a href="{% url 'delete_post' post.pk %}" class="btn btn-secondary">Delete post</a>
+    </div>
 
+    <!-- Comments on this post (from post.get_all_comments). -->
     <section class="post-comments">
         <h2>Comments</h2>
         {% for comment in post.get_all_comments %}

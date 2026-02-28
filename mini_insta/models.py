@@ -1,8 +1,8 @@
 # File: models.py
 # Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026
-# Description: Data models for mini_insta: Profile, Post, and Photo. Defines
-#              attributes and relationships (foreign keys) and accessor methods
-#              for use in views and templates.
+# Description: Data models for mini_insta: Profile, Post, Photo, Follow,
+#              Comment, and Like. Defines attributes, relationships (foreign
+#              keys), and accessor methods for use in views and templates.
 
 from django.db import models
 from django.urls import reverse
@@ -39,24 +39,32 @@ class Profile(models.Model):
         return reverse('show_profile', kwargs={'pk': self.pk})
 
     def get_followers(self):
-        """Return a list of Profiles who follow this profile (subscribers who see this profile's Posts)."""
+        """Return a list of Profiles who follow this profile (subscribers)."""
+        # Use ORM to find Follow records where this profile is the one being followed:
         follows = Follow.objects.filter(profile=self)
+        # Build list of follower Profile objects (not Follow objects) for templates:
         return [f.follower_profile for f in follows]
 
     def get_num_followers(self):
-        return (len(self.get_followers()))
-    
+        """Return the count of followers for this profile."""
+        return len(self.get_followers())
+
     def get_following(self):
-        """Return a list of Profiles this profile follows (publishers whose Posts this profile is subscribed to)."""
+        """Return a list of Profiles this profile follows (publishers)."""
+        # Use ORM to find Follow records where this profile is the follower:
         follows = Follow.objects.filter(follower_profile=self)
+        # Build list of followed Profile objects for templates:
         return [f.profile for f in follows]
 
     def get_num_following(self):
-        return (len(self.get_following()))
+        """Return the count of profiles this profile is following."""
+        return len(self.get_following())
 
     def get_post_feed(self):
         """Return Posts from profiles this profile follows, most recent first."""
+        # Collect the list of Profile objects that this profile follows:
         followed_profiles = [f.profile for f in Follow.objects.filter(follower_profile=self)]
+        # Return Posts whose author is in that list, newest first:
         return Post.objects.filter(profile__in=followed_profiles).order_by('-timestamp')
 
 
@@ -80,7 +88,7 @@ class Post(models.Model):
 
     def get_all_photos(self):
         """Return all Photo objects associated with this Post."""
-        # Filter photos by this post so the template can display them:
+        # Use ORM filter so the template can display all images for this post:
         photos = Photo.objects.filter(post=self)
         return photos
         
@@ -111,14 +119,18 @@ class Photo(models.Model):
 
     def get_image_url(self):
         """Return the URL to display this image: image_url if set, else image_file.url."""
+        # Prefer URL field when present (backwards compatibility):
         if self.image_url:
             return self.image_url
+        # Otherwise use the uploaded file's URL if a file was attached:
         if self.image_file:
             return self.image_file.url
+        # No image available:
         return ''
 
     def __str__(self):
         """Return a string representation consistent with how the image is stored."""
+        # Branch so admin/shell shows whether image came from URL or file:
         if self.image_url:
             return f'image (URL) by post {self.post} at {self.timestamp}'
         if self.image_file:
@@ -164,7 +176,8 @@ class Comment(models.Model):
     text = models.TextField(blank=False)
 
     def __str__(self):
-        """Short string for admin/shell: profile and snippet of text."""
+        """Return short string for admin/shell: profile name and snippet of text."""
+        # Truncate long comment text so __str__ stays readable:
         snippet = self.text[:50] + "..." if len(self.text) > 50 else self.text
         return f'{self.profile.display_name} on post {self.post.pk}: {snippet}'
 

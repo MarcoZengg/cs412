@@ -9,6 +9,7 @@
     <h1 class="page-title">Profiles</h1>
     <p class="page-lead">Choose a profile to view their posts.</p>
 
+    <!-- Grid of profile cards; each links to show_profile for that profile. -->
     <div class="card-grid">
         {% for i in profiles %}
         <a href="{% url 'show_profile' i.pk %}" class="card card-link">

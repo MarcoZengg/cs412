@@ -1,3 +1,7 @@
+{# File: search.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Search form page. GET with query param 'q' shows results; #}
+{#              no 'q' shows this form. Context: profile. #}
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
@@ -5,12 +9,17 @@
     <h1 class="page-title">Search</h1>
     <p class="page-lead">Search for profiles and posts.</p>
 
+    <!-- GET form; submit adds ?q=... and SearchView renders search_results.html. -->
     <form action="{% url 'search' profile.pk %}" method="get" class="form-card card">
-        <div class="form-group">
-            <label for="q">Search</label>
-            <textarea name="q" id="q" rows="3" placeholder="Enter search query..." class="form-control">{{ query|default:'' }}</textarea>
+        <div class="form-body">
+            <div class="form-group">
+                <label for="q">Search</label>
+                <textarea name="q" id="q" rows="3" placeholder="Enter search query..." class="form-control">{{ query|default:'' }}</textarea>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
     </form>
 </main>
 {% endblock %}

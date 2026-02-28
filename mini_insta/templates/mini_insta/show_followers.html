@@ -1,3 +1,6 @@
+{# File: show_followers.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: List of Profiles who follow this profile. Context: profile. #}
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
@@ -5,6 +8,7 @@
     <h1 class="page-title">Followers of {{ profile.display_name }}</h1>
     <p class="page-lead">Profiles who follow @{{ profile.username }}</p>
 
+    <!-- Cards for each follower (from profile.get_followers); link to their profile. -->
     <div class="card-grid">
         {% for follower in profile.get_followers %}
         <a href="{% url 'show_profile' follower.pk %}" class="card card-link">
