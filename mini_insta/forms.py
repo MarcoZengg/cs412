@@ -22,6 +22,19 @@ class CreatePostForm(forms.ModelForm):
 
 
 # -----------------------------------------------------------------------------
+# Create profile form: username, display_name, bio_text, profile_image_url.
+# User is not in the form; it is assigned in the view after creating the User.
+# -----------------------------------------------------------------------------
+class CreateProfileForm(forms.ModelForm):
+    """Form to create a new Profile; used with UserCreationForm in CreateProfileView. Username is set in the view from the new User."""
+
+    class Meta:
+        """Associate with Profile model; user and username are set in the view from the created User."""
+        model = Profile
+        fields = ['display_name', 'bio_text', 'profile_image_url']
+
+
+# -----------------------------------------------------------------------------
 # Update profile form: editable fields only; username and join_date read-only.
 # -----------------------------------------------------------------------------
 class UpdateProfileForm(forms.ModelForm):

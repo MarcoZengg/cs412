@@ -1,0 +1,46 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="page-title">Create profile</h1>
+    <p class="page-lead">Create an account and profile in one step. You will be logged in after submitting.</p>
+
+    <form method="post" action="{% url 'create_profile' %}" class="form-card card">
+        {% csrf_token %}
+        <div class="form-body">
+            <h2 class="form-section-title">Account</h2>
+            <p class="form-hint">Username and password for logging in.</p>
+            {% for field in user_form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <span class="form-hint">{{ field.help_text }}</span>
+                {% endif %}
+                {% if field.errors %}
+                <span class="form-error">{{ field.errors }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <h2 class="form-section-title">Profile</h2>
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <span class="form-hint">{{ field.help_text }}</span>
+                {% endif %}
+                {% if field.errors %}
+                <span class="form-error">{{ field.errors }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create profile</button>
+            <a href="{% url 'show_all_profiles' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</main>
+{% endblock %}

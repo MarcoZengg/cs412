@@ -8,10 +8,12 @@
 from .models import Profile, Post, Photo
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render
-from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
+from .forms import CreatePostForm, CreateProfileForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
 
 
@@ -46,6 +48,40 @@ class ProfileListView(ListView):
     model = Profile
     template_name = 'mini_insta/show_all_profiles.html'
     context_object_name = 'profiles'
+
+
+# -----------------------------------------------------------------------------
+# Create profile view: UserCreationForm + CreateProfileForm in one form; no login required.
+# -----------------------------------------------------------------------------
+class CreateProfileView(CreateView):
+    """Show UserCreationForm and CreateProfileForm together; on submit create User, log in, create Profile."""
+
+    model = Profile
+    form_class = CreateProfileForm
+    template_name = 'mini_insta/create_profile_form.html'
+
+    def get_context_data(self, **kwargs):
+        """Add UserCreationForm to context so the template can render both forms."""
+        context = super().get_context_data(**kwargs)
+        context['user_form'] = UserCreationForm()
+        return context
+
+    def form_valid(self, form):
+        """Create User from UserCreationForm, log them in, attach user to Profile, then save Profile."""
+        user_form = UserCreationForm(self.request.POST)
+        if not user_form.is_valid():
+            context = self.get_context_data(form=form)
+            context['user_form'] = user_form
+            return self.render_to_response(context)
+        user = user_form.save()
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+        form.instance.user = user
+        form.instance.username = user.username
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """Redirect to the new user's profile page after creation."""
+        return reverse('show_my_profile')
 
 
 # -----------------------------------------------------------------------------

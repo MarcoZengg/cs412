@@ -30,6 +30,7 @@
                     </li>
                     {% else %}
                     <li><a href="{% url 'mini_insta_login' %}">Log in</a></li>
+                    <li><a href="{% url 'create_profile' %}">Create profile</a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -71,6 +72,8 @@
             {% else %}
             <span class="footer-sep">|</span>
             <a href="{% url 'mini_insta_login' %}" class="footer-link">Log in</a>
+            <span class="footer-sep">|</span>
+            <a href="{% url 'create_profile' %}" class="footer-link">Create profile</a>
             {% endif %}
         </nav>
     </footer>

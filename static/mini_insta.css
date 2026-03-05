@@ -663,6 +663,21 @@ a:focus-visible {
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
 }
+.form-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: var(--space-lg) 0 var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+.form-section-title:first-child {
+  margin-top: 0;
+}
+.form-error {
+  font-size: 0.875rem;
+  color: var(--color-danger, #c00);
+  margin-top: var(--space-xs);
+}
 
 .form-group {
   display: flex;
