@@ -7,7 +7,7 @@
 {% block content %}
 <main class="main-content">
     <h1 class="page-title">Feed for {{ profile.display_name }}</h1>
-    <p class="page-lead">Posts from people you follow · <a href="{% url 'show_profile' profile.pk %}">Back to profile</a></p>
+    <p class="page-lead">Posts from people you follow · <a href="{% url 'show_my_profile' %}">Back to profile</a></p>
 
     <!-- Each post: author, caption, first photo, likes, comments, link to full post. -->
     {% for post in posts %}

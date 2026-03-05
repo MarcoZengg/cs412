@@ -34,11 +34,13 @@
             {% endwith %}
         </div>
     </article>
-    <!-- Links to update or delete this post. -->
+    <!-- Links to update or delete this post (only for the post owner). -->
+    {% if request.user.is_authenticated and post.profile.user == request.user %}
     <div class="post-actions">
         <a href="{% url 'update_post' post.pk %}" class="btn btn-primary">Update post</a>
         <a href="{% url 'delete_post' post.pk %}" class="btn btn-secondary">Delete post</a>
     </div>
+    {% endif %}
 
     <!-- Comments on this post (from post.get_all_comments). -->
     <section class="post-comments">

@@ -15,9 +15,11 @@
             <div class="avatar-placeholder">{{ profile.display_name|slice:":1" }}</div>
             {% endif %}
         </div>
+        {% if request.user.is_authenticated and profile.user == request.user %}
         <div>
-            <a href="{% url 'update_profile' profile.pk %}" class="btn btn-primary">Update Profile</a>
+            <a href="{% url 'update_profile' %}" class="btn btn-primary">Update Profile</a>
         </div>
+        {% endif %}
         <div class="profile-info">
             <h1 class="profile-name">{{ profile.display_name }}</h1>
             <p class="profile-username">@{{ profile.username }}</p>
@@ -37,7 +39,9 @@
     <section class="posts-section">
         <div class="section-header">
             <h2>Posts</h2>
-            <a href="{% url 'create_post' profile.pk %}" class="btn btn-primary">New post</a>
+            {% if request.user.is_authenticated and profile.user == request.user %}
+            <a href="{% url 'create_post' %}" class="btn btn-primary">New post</a>
+            {% endif %}
         </div>
         <div class="card-grid">
         {% for i in profile.get_all_posts %}
@@ -57,7 +61,7 @@
             </div>
         </a>
         {% empty %}
-        <p class="empty-state">No posts yet. <a href="{% url 'create_post' profile.pk %}">Create your first post</a>.</p>
+        <p class="empty-state">No posts yet.{% if request.user.is_authenticated and profile.user == request.user %} <a href="{% url 'create_post' %}">Create your first post</a>.{% endif %}</p>
         {% endfor %}
         </div>
     </section>

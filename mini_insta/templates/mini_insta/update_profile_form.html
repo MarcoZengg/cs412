@@ -9,7 +9,7 @@
     <h1 class="page-title">Update profile</h1>
 
     <!-- POST to update_profile; UpdateProfileView saves and redirects to show_profile. -->
-    <form method="post" action="{% url 'update_profile' profile.pk %}" class="form-card card">
+    <form method="post" action="{% url 'update_profile' %}" class="form-card card">
         {% csrf_token %}
         <div class="form-body">
             {% for field in form %}
@@ -24,7 +24,7 @@
         </div>
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Update profile</button>
-            <a href="{% url 'show_profile' profile.pk %}" class="btn btn-secondary">Cancel</a>
+            <a href="{% url 'show_my_profile' %}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </main>

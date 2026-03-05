@@ -10,7 +10,7 @@
     <p class="page-lead">Search for profiles and posts.</p>
 
     <!-- GET form; submit adds ?q=... and SearchView renders search_results.html. -->
-    <form action="{% url 'search' profile.pk %}" method="get" class="form-card card">
+    <form action="{% url 'search' %}" method="get" class="form-card card">
         <div class="form-body">
             <div class="form-group">
                 <label for="q">Search</label>

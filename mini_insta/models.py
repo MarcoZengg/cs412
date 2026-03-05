@@ -6,6 +6,7 @@
 
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 # -----------------------------------------------------------------------------
@@ -14,6 +15,10 @@ from django.urls import reverse
 class Profile(models.Model):
     """Store one user profile for list and detail pages."""
 
+    # Link to Django User for authentication; FK (not OneToOne) so existing
+    # Profiles can be migrated with a default (e.g. admin User). Associate
+    # the correct User later via admin.
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mini_insta_profiles',)
     # Required; unique display identifier for the user:
     username = models.TextField(blank=False)
     # Display name shown on profile and list pages:

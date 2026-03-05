@@ -6,6 +6,9 @@
 #              and redirects.
 
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import Article, Comment
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.views.generic.edit import DeleteView
@@ -21,6 +24,14 @@ class ShowAllView(ListView):
     model = Article
     template_name = 'blog/show_all.html'
     context_object_name = 'articles'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Override dispatch to add debugging: print whether user is authenticated."""
+        if request.user.is_authenticated:
+            print(f'ShowAllView.dispatch(): request.user={request.user}')
+        else:
+            print(f'ShowAllView.dispatch(): not logged in.')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ArticleView(DetailView):
@@ -43,15 +54,33 @@ class RandomArticleView(DetailView):
         all_articles = Article.objects.all()
         return random.choice(all_articles)
 
-class CreateArticleView(CreateView):
-    """Display the create-article form (GET) and process submission (POST)."""
+class CreateArticleView(LoginRequiredMixin, CreateView):
+    """View to create a new Article; only allowed for logged-in users."""
 
     form_class = CreateArticleForm
     template_name = "blog/create_article_form.html"
 
+    def get_login_url(self):
+        """Return the URL to redirect to when the user is not logged in."""
+        return reverse('login')
+
     def form_valid(self, form):
-        """Save the new Article; delegate to superclass to handle redirect."""
+        """Attach the logged-in user to the article instance, then save and redirect."""
+        user = self.request.user
+        form.instance.user = user
         return super().form_valid(form)
+
+
+class UserRegistrationView(CreateView):
+    """Show and process the registration form to create a new User."""
+
+    template_name = 'blog/register.html'
+    form_class = UserCreationForm
+    model = User
+
+    def get_success_url(self):
+        """Redirect to the login page after successful registration."""
+        return reverse('login')
 
 
 class CreateCommentView(CreateView):

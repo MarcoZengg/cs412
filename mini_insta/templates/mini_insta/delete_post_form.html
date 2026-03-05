@@ -17,7 +17,7 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Yes, delete</button>
             </form>
-            <a href="{% url 'show_profile' profile.pk %}" class="btn btn-secondary">Cancel</a>
+            <a href="{% url 'show_my_profile' %}" class="btn btn-secondary">Cancel</a>
         </div>
     </div>
 </main>

@@ -1,33 +1,44 @@
-<!-- blog/base.html -->
 {% load static %}
- 
- 
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Our Blog</title>
         <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
     </head>
- 
- 
     <body>
-        <head>
+        <header>
             <h1>Our Blog</h1>
             <nav>
                 <ul>
+                    <!-- URLs for all users -->
                     <li><a href="{% url 'random' %}">Random</a></li>
                     <li><a href="{% url 'show_all' %}">Show All</a></li>
+
+                    <!-- URLs for logged-in users only -->
+                    {% if request.user.is_authenticated %}
                     <li><a href="{% url 'create_article' %}">Create</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+
+                    <!-- URLs for users who are not logged in -->
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
                 </ul>
+                <hr>
+                {% if request.user.is_authenticated %}
+                Logged in as: {{ request.user }}
+                {% else %}
+                Not logged in.
+                {% endif %}
             </nav>
-        </head>
- 
- 
-        <!-- substitute in the specific content here -->
+        </header>
+
         {% block content %}
         {% endblock %}
- 
- 
     </body>
- 
- 
 </html>

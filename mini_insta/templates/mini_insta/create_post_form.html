@@ -10,7 +10,7 @@
     <p class="page-lead">Add a caption and optional image files for your post.</p>
 
     <!-- Create post form: POST to create_post; enctype required for file upload. -->
-    <form method="post" action="{% url 'create_post' profile.pk %}" class="form-card card" enctype="multipart/form-data">
+    <form method="post" action="{% url 'create_post' %}" class="form-card card" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-body">
             {% for field in form %}
@@ -30,7 +30,7 @@
         </div>
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Create post</button>
-            <a href="{% url 'show_profile' profile.pk %}" class="btn btn-secondary">Cancel</a>
+            <a href="{% url 'show_my_profile' %}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </main>

@@ -12,19 +12,27 @@
     <link rel="stylesheet" href="{% static 'mini_insta.css' %}">
 </head>
 <body>
-    <!-- Site header: logo and main navigation (Home, All profiles, Profile when in context). -->
+    <!-- Site header: logo, nav, and auth state (who is logged in, for debugging). -->
     <header class="site-header">
         <div class="header-inner">
             <a href="{% url 'show_all_profiles' %}" class="logo">Mini Insta</a>
             <nav class="site-nav" aria-label="Main navigation">
                 <ul>
-                    <li><a href="{% if profile %}{% url 'show_feed' profile.pk %}{% else %}{% url 'show_all_profiles' %}{% endif %}">Home</a></li>
+                    <li><a href="{% if profile and request.user.is_authenticated and profile.user == request.user %}{% url 'show_feed' %}{% else %}{% url 'show_all_profiles' %}{% endif %}">Home</a></li>
                     <li><a href="{% url 'show_all_profiles' %}">All profiles</a></li>
-                    {% if profile %}
-                    <li><a href="{% url 'show_profile' profile.pk %}">Profile</a></li>
+                    {% if profile and request.user.is_authenticated and profile.user == request.user %}
+                    <li><a href="{% url 'show_my_profile' %}">Profile</a></li>
                     {% endif %}
                 </ul>
             </nav>
+            <!-- Auth state: show who is logged in (helpful while building auth). -->
+            <div class="auth-state">
+                {% if request.user.is_authenticated %}
+                Logged in as: <strong>{{ request.user }}</strong>
+                {% else %}
+                Not logged in.
+                {% endif %}
+            </div>
         </div>
     </header>
 
@@ -38,15 +46,15 @@
     <footer class="site-footer">
         <nav class="footer-nav" aria-label="Footer navigation">
             <a href="{% url 'show_all_profiles' %}" class="footer-link">All profiles</a>
-            {% if profile %}
+            {% if profile and request.user.is_authenticated and profile.user == request.user %}
             <span class="footer-sep">|</span>
-            <a href="{% url 'show_feed' profile.pk %}" class="footer-link">Feed</a>
+            <a href="{% url 'show_feed' %}" class="footer-link">Feed</a>
             <span class="footer-sep">|</span>
-            <a href="{% url 'search' profile.pk %}" class="footer-link">Search</a>
+            <a href="{% url 'search' %}" class="footer-link">Search</a>
             <span class="footer-sep">|</span>
-            <a href="{% url 'create_post' profile.pk %}" class="footer-link">New post</a>
+            <a href="{% url 'create_post' %}" class="footer-link">New post</a>
             <span class="footer-sep">|</span>
-            <a href="{% url 'show_profile' profile.pk %}" class="footer-link">Profile</a>
+            <a href="{% url 'show_my_profile' %}" class="footer-link">Profile</a>
             {% endif %}
         </nav>
     </footer>

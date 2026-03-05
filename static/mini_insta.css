@@ -95,6 +95,12 @@ a:focus-visible {
 }
 .logo:hover { text-decoration: none; color: var(--color-primary); }
 
+.auth-state {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+.auth-state strong { color: var(--color-text); }
+
 .site-nav ul {
   margin: 0;
   padding: 0;

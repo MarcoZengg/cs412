@@ -7,7 +7,7 @@
 {% block content %}
 <main class="main-content">
     <h1 class="page-title">Search results for "{{ query }}"</h1>
-    <p class="page-lead"><a href="{% url 'search' profile.pk %}">Search again</a></p>
+    <p class="page-lead"><a href="{% url 'search' %}">Search again</a></p>
 
     <!-- Profiles matching query (username, display_name, or bio_text). -->
     <section class="search-section">
