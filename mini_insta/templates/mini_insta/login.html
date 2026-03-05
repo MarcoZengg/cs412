@@ -1,0 +1,21 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <h1 class="page-title">Log in</h1>
+    <p class="page-lead">Log in to access your profile, feed, and more.</p>
+
+    <form method="post" action="{% url 'mini_insta_login' %}" class="form-card card">
+        {% csrf_token %}
+        {{ form }}
+        {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% else %}
+        <input type="hidden" name="next" value="{% url 'show_all_profiles' %}">
+        {% endif %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Log in</button>
+        </div>
+    </form>
+</main>
+{% endblock %}

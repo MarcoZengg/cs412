@@ -7,6 +7,8 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 from .views import (
     ProfileListView,
     ProfileDetailView,
@@ -26,6 +28,10 @@ from .views import (
 # Profile-scoped paths without pk use the logged-in user's profile (login required).
 urlpatterns = [
     path('', ProfileListView.as_view(), name="show_all_profiles"),
+    # Authentication (login, logout, logout confirmation):
+    path('login/', auth_views.LoginView.as_view(template_name='mini_insta/login.html'), name='mini_insta_login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='logout_confirmation'), name='mini_insta_logout'),
+    path('logout_confirmation/', TemplateView.as_view(template_name='mini_insta/logged_out.html'), name='logout_confirmation'),
     # Logged-in user's own profile and profile actions (no pk):
     path('profile/', MyProfileDetailView.as_view(), name='show_my_profile'),
     path('profile/feed', PostFeedListView.as_view(), name='show_feed'),

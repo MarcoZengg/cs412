@@ -20,8 +20,16 @@
                 <ul>
                     <li><a href="{% if profile and request.user.is_authenticated and profile.user == request.user %}{% url 'show_feed' %}{% else %}{% url 'show_all_profiles' %}{% endif %}">Home</a></li>
                     <li><a href="{% url 'show_all_profiles' %}">All profiles</a></li>
-                    {% if profile and request.user.is_authenticated and profile.user == request.user %}
+                    {% if request.user.is_authenticated %}
                     <li><a href="{% url 'show_my_profile' %}">Profile</a></li>
+                    <li>
+                        <form action="{% url 'mini_insta_logout' %}" method="post" class="nav-logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link-style">Log out</button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li><a href="{% url 'mini_insta_login' %}">Log in</a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -46,7 +54,9 @@
     <footer class="site-footer">
         <nav class="footer-nav" aria-label="Footer navigation">
             <a href="{% url 'show_all_profiles' %}" class="footer-link">All profiles</a>
-            {% if profile and request.user.is_authenticated and profile.user == request.user %}
+            {% if request.user.is_authenticated %}
+            <span class="footer-sep">|</span>
+            <a href="{% url 'show_my_profile' %}" class="footer-link">Profile</a>
             <span class="footer-sep">|</span>
             <a href="{% url 'show_feed' %}" class="footer-link">Feed</a>
             <span class="footer-sep">|</span>
@@ -54,7 +64,13 @@
             <span class="footer-sep">|</span>
             <a href="{% url 'create_post' %}" class="footer-link">New post</a>
             <span class="footer-sep">|</span>
-            <a href="{% url 'show_my_profile' %}" class="footer-link">Profile</a>
+            <form action="{% url 'mini_insta_logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="footer-link" style="background: none; border: none; cursor: pointer; font: inherit;">Log out</button>
+            </form>
+            {% else %}
+            <span class="footer-sep">|</span>
+            <a href="{% url 'mini_insta_login' %}" class="footer-link">Log in</a>
             {% endif %}
         </nav>
     </footer>

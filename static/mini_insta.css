@@ -121,6 +121,26 @@ a:focus-visible {
   color: var(--color-primary);
 }
 
+.nav-logout-form {
+  display: inline;
+}
+.site-nav .nav-link-style {
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.site-nav .nav-link-style:hover {
+  background: var(--color-primary-muted);
+  color: var(--color-primary);
+}
+
 /* ----- Page wrapper & main ----- */
 .page-wrapper {
   flex: 1;

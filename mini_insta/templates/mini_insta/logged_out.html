@@ -1,0 +1,11 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<main class="main-content">
+    <div class="form-card card">
+        <h1 class="page-title">Logged out</h1>
+        <p class="page-lead">You have been logged out successfully.</p>
+        <p><a href="{% url 'mini_insta_login' %}" class="btn btn-primary">Log in again</a></p>
+    </div>
+</main>
+{% endblock %}

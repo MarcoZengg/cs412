@@ -22,8 +22,8 @@ class MiniInstaLoginRequiredMixin(LoginRequiredMixin):
     """Require authentication; redirect to login with ?next= for post-login redirect."""
 
     def get_login_url(self):
-        """Redirect to project login (e.g. blog); next is set by LoginRequiredMixin."""
-        return reverse('login')
+        """Redirect to mini_insta login; next is set by LoginRequiredMixin for post-login redirect."""
+        return reverse('mini_insta_login')
 
     def get_logged_in_user_profile(self):
         """Return the Profile linked to the logged-in user, or None if none exists."""
