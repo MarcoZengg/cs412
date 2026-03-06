@@ -56,6 +56,14 @@
             <p class="empty-state">No comments.</p>
             {% endfor %}
         </section>
+        {% if request.user.is_authenticated %}
+        <form method="post" action="{% url 'create_comment' post.pk %}" class="feed-comment-form">
+            {% csrf_token %}
+            <label for="comment-{{ post.pk }}">Add a comment</label>
+            <textarea name="text" id="comment-{{ post.pk }}" rows="2" placeholder="Write a comment..." required></textarea>
+            <button type="submit" class="btn btn-primary btn-sm">Comment</button>
+        </form>
+        {% endif %}
     </article>
     {% empty %}
     <p class="empty-state">No posts in your feed yet. <a href="{% url 'show_following' profile.pk %}">Follow some people</a> to see their posts here.</p>

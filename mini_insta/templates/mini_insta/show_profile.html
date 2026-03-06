@@ -19,6 +19,14 @@
         <div>
             <a href="{% url 'update_profile' %}" class="btn btn-primary">Update Profile</a>
         </div>
+        {% elif request.user.is_authenticated and my_profile and my_profile != profile %}
+        <div class="profile-follow-actions">
+            {% if is_following %}
+            <form action="{% url 'delete_follow' profile.pk %}" method="post" style="display: inline;">{% csrf_token %}<button type="submit" class="btn btn-secondary">Unfollow</button></form>
+            {% else %}
+            <form action="{% url 'follow_profile' profile.pk %}" method="post" style="display: inline;">{% csrf_token %}<button type="submit" class="btn btn-primary">Follow</button></form>
+            {% endif %}
+        </div>
         {% endif %}
         <div class="profile-info">
             <h1 class="profile-name">{{ profile.display_name }}</h1>

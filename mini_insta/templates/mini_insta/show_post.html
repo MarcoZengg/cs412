@@ -12,6 +12,15 @@
             {% with post.get_likes as likes %}
             <p class="post-likes">{{ likes|length }} like{{ likes|length|pluralize }}</p>
             {% endwith %}
+            {% if request.user.is_authenticated and my_profile and post.profile != my_profile %}
+            <div class="post-like-action">
+                {% if has_liked %}
+                <form action="{% url 'delete_like' post.pk %}" method="post" style="display: inline;">{% csrf_token %}<button type="submit" class="btn btn-secondary btn-sm">Unlike</button></form>
+                {% else %}
+                <form action="{% url 'like_post' post.pk %}" method="post" style="display: inline;">{% csrf_token %}<button type="submit" class="btn btn-primary btn-sm">Like</button></form>
+                {% endif %}
+            </div>
+            {% endif %}
             <p class="post-caption-lead">{{ post.caption }}</p>
             <time class="post-detail-time" datetime="{{ post.timestamp|date:'c' }}">{{ post.timestamp|date:"F j, Y \a\t g:i A" }}</time>
         </div>
@@ -40,6 +49,18 @@
         <a href="{% url 'update_post' post.pk %}" class="btn btn-primary">Update post</a>
         <a href="{% url 'delete_post' post.pk %}" class="btn btn-secondary">Delete post</a>
     </div>
+    {% endif %}
+
+    <!-- Add a comment (logged-in users only). -->
+    {% if request.user.is_authenticated and comment_form %}
+    <section class="add-comment">
+        <h2>Add a comment</h2>
+        <form method="post" action="{% url 'create_comment' post.pk %}" class="comment-form">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary">Add comment</button>
+        </form>
+    </section>
     {% endif %}
 
     <!-- Comments on this post (from post.get_all_comments). -->

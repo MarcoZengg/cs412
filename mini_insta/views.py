@@ -5,15 +5,15 @@
 #              following, feed, and search. Create/Update/Delete and feed/search
 #              require login via MiniInstaLoginRequiredMixin.
 
-from .models import Profile, Post, Photo
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Profile, Post, Photo, Follow, Like, Comment
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.db.models import Q
 from django.http import Http404
-from django.shortcuts import render
-from .forms import CreatePostForm, CreateProfileForm, UpdateProfileForm, UpdatePostForm
+from django.shortcuts import render, redirect
+from .forms import CreatePostForm, CreateProfileForm, CreateCommentForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
 
 
@@ -94,6 +94,42 @@ class ProfileDetailView(DetailView):
     template_name = 'mini_insta/show_profile.html'
     context_object_name = 'profile'
 
+    def get_context_data(self, **kwargs):
+        """Add is_following and my_profile so template can show Follow/Unfollow (and hide for own profile)."""
+        context = super().get_context_data(**kwargs)
+        profile = self.object
+        my_profile = Profile.objects.filter(user=self.request.user).first() if self.request.user.is_authenticated else None
+        context['my_profile'] = my_profile
+        if my_profile and my_profile != profile:
+            context['is_following'] = Follow.objects.filter(profile=profile, follower_profile=my_profile).exists()
+        else:
+            context['is_following'] = False
+        return context
+
+
+# -----------------------------------------------------------------------------
+# Follow / Unfollow views (login required; POST only; redirect back to profile).
+# -----------------------------------------------------------------------------
+class FollowProfileView(MiniInstaLoginRequiredMixin, View):
+    """Create a Follow from the logged-in user's profile to the profile identified by pk."""
+
+    def post(self, request, *args, **kwargs):
+        my_profile = self.get_logged_in_user_profile_or_404()
+        target = Profile.objects.get(pk=kwargs['pk'])
+        if my_profile != target:
+            Follow.objects.get_or_create(profile=target, follower_profile=my_profile)
+        return redirect('show_profile', pk=target.pk)
+
+
+class DeleteFollowView(MiniInstaLoginRequiredMixin, View):
+    """Remove the Follow from the logged-in user's profile to the profile identified by pk."""
+
+    def post(self, request, *args, **kwargs):
+        my_profile = self.get_logged_in_user_profile_or_404()
+        target = Profile.objects.get(pk=kwargs['pk'])
+        Follow.objects.filter(profile=target, follower_profile=my_profile).delete()
+        return redirect('show_profile', pk=target.pk)
+
 
 # -----------------------------------------------------------------------------
 # Detail view: display the logged-in user's own profile (no pk in URL).
@@ -121,10 +157,82 @@ class PostDetailView(DetailView):
     context_object_name = 'post'
 
     def get_context_data(self, **kwargs):
-        """Add the post's profile so base template can show owner-only nav/footer links."""
+        """Add profile, my_profile, and has_liked so template can show Like/Unlike (and hide for own post)."""
         context = super().get_context_data(**kwargs)
-        context['profile'] = self.object.profile
+        post = self.object
+        context['profile'] = post.profile
+        context['comment_form'] = CreateCommentForm()
+        my_profile = Profile.objects.filter(user=self.request.user).first() if self.request.user.is_authenticated else None
+        context['my_profile'] = my_profile
+        if my_profile and post.profile != my_profile:
+            context['has_liked'] = Like.objects.filter(post=post, profile=my_profile).exists()
+        else:
+            context['has_liked'] = False
         return context
+
+
+# -----------------------------------------------------------------------------
+# Like / Unlike views (login required; POST only; redirect back to post).
+# -----------------------------------------------------------------------------
+class LikePostView(MiniInstaLoginRequiredMixin, View):
+    """Create a Like from the logged-in user's profile for the post identified by pk."""
+
+    def post(self, request, *args, **kwargs):
+        my_profile = self.get_logged_in_user_profile_or_404()
+        post = Post.objects.get(pk=kwargs['pk'])
+        if post.profile != my_profile:
+            Like.objects.get_or_create(post=post, profile=my_profile)
+        return redirect('show_post', pk=post.pk)
+
+
+class DeleteLikeView(MiniInstaLoginRequiredMixin, View):
+    """Remove the Like from the logged-in user's profile for the post identified by pk."""
+
+    def post(self, request, *args, **kwargs):
+        my_profile = self.get_logged_in_user_profile_or_404()
+        post = Post.objects.get(pk=kwargs['pk'])
+        Like.objects.filter(post=post, profile=my_profile).delete()
+        return redirect('show_post', pk=post.pk)
+
+
+# -----------------------------------------------------------------------------
+# Create comment view (login required); redirects to post after adding comment.
+# -----------------------------------------------------------------------------
+class CreateCommentView(MiniInstaLoginRequiredMixin, CreateView):
+    """Add a Comment to the Post identified by pk; redirect to that post after success."""
+
+    model = Comment
+    form_class = CreateCommentForm
+    template_name = 'mini_insta/show_post.html'
+
+    def get(self, request, *args, **kwargs):
+        """GET create_comment URL just redirects to the post page."""
+        return redirect('show_post', pk=kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        """Build same context as PostDetailView so show_post template renders correctly."""
+        context = super().get_context_data(**kwargs)
+        post = Post.objects.get(pk=self.kwargs['pk'])
+        context['post'] = post
+        context['profile'] = post.profile
+        context['comment_form'] = context.get('form', CreateCommentForm())
+        my_profile = self.get_logged_in_user_profile()
+        context['my_profile'] = my_profile
+        if my_profile and post.profile != my_profile:
+            context['has_liked'] = Like.objects.filter(post=post, profile=my_profile).exists()
+        else:
+            context['has_liked'] = False
+        return context
+
+    def form_valid(self, form):
+        """Set post and profile on the comment, then save."""
+        form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
+        form.instance.profile = self.get_logged_in_user_profile_or_404()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """Redirect to the post on which the user commented."""
+        return reverse('show_post', kwargs={'pk': self.kwargs['pk']})
 
 
 # -----------------------------------------------------------------------------

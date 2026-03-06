@@ -5,7 +5,7 @@
 #              photo uploads are handled in the template and view, not here.
 
 from django import forms
-from .models import Post, Profile
+from .models import Post, Profile, Comment
 
 
 # -----------------------------------------------------------------------------
@@ -44,6 +44,17 @@ class UpdateProfileForm(forms.ModelForm):
         """Associate this form with the Profile model; exclude username and join_date."""
         model = Profile
         fields = ['display_name', 'bio_text', 'profile_image_url']
+
+
+# -----------------------------------------------------------------------------
+# Create comment form: text only; post and profile are set in the view.
+# -----------------------------------------------------------------------------
+class CreateCommentForm(forms.ModelForm):
+    """Form to add a Comment on a Post; used by CreateCommentView."""
+
+    class Meta:
+        model = Comment
+        fields = ['text']
 
 
 # -----------------------------------------------------------------------------
