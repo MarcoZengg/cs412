@@ -12,6 +12,7 @@
             {% with post.get_likes as likes %}
             <p class="post-likes">{{ likes|length }} like{{ likes|length|pluralize }}</p>
             {% endwith %}
+            <!-- Show Like/Unlike only for logged-in users viewing someone else's post (not own). -->
             {% if request.user.is_authenticated and my_profile and post.profile != my_profile %}
             <div class="post-like-action">
                 {% if has_liked %}

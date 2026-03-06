@@ -20,6 +20,7 @@
                 <ul>
                     <li><a href="{% if profile and request.user.is_authenticated and profile.user == request.user %}{% url 'show_feed' %}{% else %}{% url 'show_all_profiles' %}{% endif %}">Home</a></li>
                     <li><a href="{% url 'show_all_profiles' %}">All profiles</a></li>
+                    <!-- Show Profile and Log out only when authenticated; otherwise show Log in and Create profile. -->
                     {% if request.user.is_authenticated %}
                     <li><a href="{% url 'show_my_profile' %}">Profile</a></li>
                     <li>

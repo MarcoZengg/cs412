@@ -30,8 +30,10 @@ from .views import (
     SearchView,
 )
 
+# -----------------------------------------------------------------------------
 # URL patterns: each path maps a URL to a view and a name for reverse().
 # Profile-scoped paths without pk use the logged-in user's profile (login required).
+# -----------------------------------------------------------------------------
 urlpatterns = [
     path('', ProfileListView.as_view(), name="show_all_profiles"),
     path('create_profile', CreateProfileView.as_view(), name='create_profile'),

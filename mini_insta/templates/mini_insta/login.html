@@ -1,3 +1,7 @@
+{# File: login.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Login form. Uses auth_views.LoginView; hidden "next" redirects #}
+{#              to the page that required login (e.g. create_post) or show_all_profiles. #}
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
@@ -8,6 +12,7 @@
     <form method="post" action="{% url 'mini_insta_login' %}" class="form-card card">
         {% csrf_token %}
         {{ form }}
+        <!-- Redirect after login: use request.GET.next if present (e.g. from LoginRequiredMixin), else show_all_profiles. -->
         {% if request.GET.next %}
         <input type="hidden" name="next" value="{{ request.GET.next }}">
         {% else %}

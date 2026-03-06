@@ -1,3 +1,8 @@
+{# File: create_profile_form.html #}
+{# Author: Xiankun Zeng (xiankz23@bu.edu), 2/12/2026 #}
+{# Description: Combined registration form. Renders UserCreationForm (Account) and #}
+{#              CreateProfileForm (Profile) in one form; CreateProfileView creates #}
+{#              User, logs in, then creates Profile. Context: form, user_form. #}
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
@@ -5,6 +10,7 @@
     <h1 class="page-title">Create profile</h1>
     <p class="page-lead">Create an account and profile in one step. You will be logged in after submitting.</p>
 
+    <!-- Single form POSTs to create_profile; view creates User then Profile and logs in. -->
     <form method="post" action="{% url 'create_profile' %}" class="form-card card">
         {% csrf_token %}
         <div class="form-body">

@@ -15,6 +15,7 @@
             <div class="avatar-placeholder">{{ profile.display_name|slice:":1" }}</div>
             {% endif %}
         </div>
+        <!-- Owner sees Update Profile; other logged-in users see Follow/Unfollow. -->
         {% if request.user.is_authenticated and profile.user == request.user %}
         <div>
             <a href="{% url 'update_profile' %}" class="btn btn-primary">Update Profile</a>

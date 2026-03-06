@@ -53,6 +53,7 @@ class CreateCommentForm(forms.ModelForm):
     """Form to add a Comment on a Post; used by CreateCommentView."""
 
     class Meta:
+        """Associate with Comment model; only text is in the form; post and profile are set in the view."""
         model = Comment
         fields = ['text']
 

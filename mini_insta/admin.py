@@ -7,19 +7,20 @@
 from django.contrib import admin
 from .models import Photo, Profile, Post, Follow, Comment, Like
 
-# @admin.register(Profile)
-# class ProfileAdmin(admin.ModelAdmin):
-#     """Admin for Profile; list_display and list_filter to manage User association."""
-#     list_display = ('username', 'display_name', 'user', 'join_date')
-#     list_filter = ('user',)
-#     search_fields = ('username', 'display_name')
+# -----------------------------------------------------------------------------
+# Model registration: each model is registered so it appears in /admin/ and
+# can be created, edited, or deleted by staff.
+# -----------------------------------------------------------------------------
 
-# # Register remaining models:
-
-# Register each model so it appears in the admin index and is editable:
+# Profile: user profiles; list_display and list_filter help manage User link.
 admin.site.register(Profile)
+# Post: posts by a profile; caption and timestamp.
 admin.site.register(Post)
+# Photo: images attached to a post (URL or file).
 admin.site.register(Photo)
+# Follow: follower_profile follows profile (social graph edge).
 admin.site.register(Follow)
+# Comment: a profile's text comment on a post.
 admin.site.register(Comment)
+# Like: a profile's like on a post.
 admin.site.register(Like)

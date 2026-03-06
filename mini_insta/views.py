@@ -69,6 +69,7 @@ class CreateProfileView(CreateView):
     def form_valid(self, form):
         """Create User from UserCreationForm, log them in, attach user to Profile, then save Profile."""
         user_form = UserCreationForm(self.request.POST)
+        # If account fields are invalid, re-render with errors and do not create User/Profile:
         if not user_form.is_valid():
             context = self.get_context_data(form=form)
             context['user_form'] = user_form
@@ -100,6 +101,7 @@ class ProfileDetailView(DetailView):
         profile = self.object
         my_profile = Profile.objects.filter(user=self.request.user).first() if self.request.user.is_authenticated else None
         context['my_profile'] = my_profile
+        # Only check is_following when viewing another user's profile (not own):
         if my_profile and my_profile != profile:
             context['is_following'] = Follow.objects.filter(profile=profile, follower_profile=my_profile).exists()
         else:
@@ -116,6 +118,7 @@ class FollowProfileView(MiniInstaLoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         my_profile = self.get_logged_in_user_profile_or_404()
         target = Profile.objects.get(pk=kwargs['pk'])
+        # Only create Follow if the user is not trying to follow themselves:
         if my_profile != target:
             Follow.objects.get_or_create(profile=target, follower_profile=my_profile)
         return redirect('show_profile', pk=target.pk)
@@ -164,6 +167,7 @@ class PostDetailView(DetailView):
         context['comment_form'] = CreateCommentForm()
         my_profile = Profile.objects.filter(user=self.request.user).first() if self.request.user.is_authenticated else None
         context['my_profile'] = my_profile
+        # Only check has_liked when viewing another user's post (not own):
         if my_profile and post.profile != my_profile:
             context['has_liked'] = Like.objects.filter(post=post, profile=my_profile).exists()
         else:
@@ -180,6 +184,7 @@ class LikePostView(MiniInstaLoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         my_profile = self.get_logged_in_user_profile_or_404()
         post = Post.objects.get(pk=kwargs['pk'])
+        # Do not allow a user to like their own post:
         if post.profile != my_profile:
             Like.objects.get_or_create(post=post, profile=my_profile)
         return redirect('show_post', pk=post.pk)
@@ -218,6 +223,7 @@ class CreateCommentView(MiniInstaLoginRequiredMixin, CreateView):
         context['comment_form'] = context.get('form', CreateCommentForm())
         my_profile = self.get_logged_in_user_profile()
         context['my_profile'] = my_profile
+        # Only check has_liked when the viewer is not the post owner:
         if my_profile and post.profile != my_profile:
             context['has_liked'] = Like.objects.filter(post=post, profile=my_profile).exists()
         else:
@@ -267,6 +273,7 @@ class CreatePostView(MiniInstaLoginRequiredMixin, CreateView):
         # Create one Photo per uploaded file (from input name="files" with multiple).
         files = self.request.FILES.getlist('files')
         for f in files:
+            # Each uploaded file becomes a separate Photo linked to this post:
             Photo.objects.create(post=post, image_file=f)
 
         return response
@@ -324,6 +331,9 @@ class UpdatePostView(MiniInstaLoginRequiredMixin, UpdateView):
         """Redirect to the show_post page for this post."""
         return reverse('show_post', kwargs={'pk': self.object.pk})
 
+# -----------------------------------------------------------------------------
+# Detail views: show followers list and following list for a profile (by pk).
+# -----------------------------------------------------------------------------
 class ShowFollowersDetailView(DetailView):
     """DetailView for a Profile; template shows this profile's followers."""
 
@@ -339,6 +349,9 @@ class ShowFollowingDetailView(DetailView):
     template_name = "mini_insta/show_following.html"
     context_object_name = 'profile'
 
+# -----------------------------------------------------------------------------
+# List view: post feed for the logged-in user (posts from followed profiles).
+# -----------------------------------------------------------------------------
 class PostFeedListView(MiniInstaLoginRequiredMixin, ListView):
     """List view of the post feed for the logged-in user's profile."""
 
@@ -356,6 +369,9 @@ class PostFeedListView(MiniInstaLoginRequiredMixin, ListView):
         context['profile'] = self.get_logged_in_user_profile_or_404()
         return context
 
+# -----------------------------------------------------------------------------
+# Search view: form (search.html) or results (search_results.html) by GET param q.
+# -----------------------------------------------------------------------------
 class SearchView(MiniInstaLoginRequiredMixin, ListView):
     """Search Profiles and Posts by text; form on search.html, results on search_results.html."""
 
@@ -364,6 +380,7 @@ class SearchView(MiniInstaLoginRequiredMixin, ListView):
 
     def dispatch(self, request, *args, **kwargs):
         """If query is absent from GET, show search form; otherwise run ListView."""
+        # No query in GET: show the search form page instead of results:
         if 'q' not in request.GET:
             profile = Profile.objects.filter(user=request.user).first()
             if profile is None:
