@@ -1,0 +1,76 @@
+<!--
+File: voter_search.html
+Author: Xiankun Zeng (xiankz23@bu.edu), 02/03/2026
+Description: Reusable filter form for voter list and graph pages.
+-->
+<h3>Filter voters</h3>
+<form method="get" action="{% if filter_form_url_name %}{% url filter_form_url_name %}{% else %}{% url 'voters' %}{% endif %}">
+    <table>
+        <!-- Optional party affiliation filter. -->
+        <tr>
+            <th>Party affiliation</th>
+            <td>
+                <select name="party">
+                    <option value="">Any</option>
+                    {% for party in party_choices %}
+                    <option value="{{ party }}" {% if selected_party == party %}selected{% endif %}>
+                        {{ party|cut:" " }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <!-- Optional minimum year-of-birth filter. -->
+        <tr>
+            <th>Minimum birth year</th>
+            <td>
+                <select name="min_year">
+                    <option value="">Any</option>
+                    {% for y in year_choices %}
+                    <option value="{{ y }}" {% if selected_min_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <!-- Optional maximum year-of-birth filter. -->
+        <tr>
+            <th>Maximum birth year</th>
+            <td>
+                <select name="max_year">
+                    <option value="">Any</option>
+                    {% for y in year_choices %}
+                    <option value="{{ y }}" {% if selected_max_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <!-- Optional voter-score filter. -->
+        <tr>
+            <th>Voter score</th>
+            <td>
+                <select name="voter_score">
+                    <option value="">Any</option>
+                    {% for s in score_choices %}
+                    <option value="{{ s }}" {% if selected_score == s|stringformat:"s" %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <!-- Optional election participation filters (checkboxes). -->
+        <tr>
+            <th>Voted in elections</th>
+            <td>
+                <label><input type="checkbox" name="v20state" {% if "v20state" in selected_elections %}checked{% endif %}> 2020 State</label><br>
+                <label><input type="checkbox" name="v21town" {% if "v21town" in selected_elections %}checked{% endif %}> 2021 Town</label><br>
+                <label><input type="checkbox" name="v21primary" {% if "v21primary" in selected_elections %}checked{% endif %}> 2021 Primary</label><br>
+                <label><input type="checkbox" name="v22general" {% if "v22general" in selected_elections %}checked{% endif %}> 2022 General</label><br>
+                <label><input type="checkbox" name="v23town" {% if "v23town" in selected_elections %}checked{% endif %}> 2023 Town</label>
+            </td>
+        </tr>
+        <!-- Submit selected filters or clear all selections. -->
+        <tr>
+            <td><button type="submit">Filter</button></td>
+            <td><a href="{% if filter_form_url_name %}{% url filter_form_url_name %}{% else %}{% url 'voters' %}{% endif %}">Clear</a></td>
+        </tr>
+    </table>
+</form>

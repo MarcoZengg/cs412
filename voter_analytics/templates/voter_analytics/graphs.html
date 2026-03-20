@@ -1,0 +1,34 @@
+<!--
+File: graphs.html
+Author: Xiankun Zeng (xiankz23@bu.edu), 02/03/2026
+Description: Graph dashboard page for aggregate voter analytics.
+-->
+{% extends "voter_analytics/base.html" %}
+{% block nav_graphs_class %}va-nav-active{% endblock %}
+
+{% block content %}
+<h2>Voter data — graphs</h2>
+
+<!-- Reuse the same filter form used on the voter listing page. -->
+<div class="va-filter-panel">
+{% include "voter_analytics/voter_search.html" %}
+</div>
+
+<!-- Chart 1: distribution of voter birth years. -->
+<div class="va-chart-section">
+<h3>Distribution by year of birth</h3>
+{{ graph_div_birth_year|safe }}
+</div>
+
+<!-- Chart 2: distribution by party affiliation. -->
+<div class="va-chart-section">
+<h3>Distribution by party affiliation</h3>
+{{ graph_div_party|safe }}
+</div>
+
+<!-- Chart 3: vote participation counts across tracked elections. -->
+<div class="va-chart-section">
+<h3>Participation in each election</h3>
+{{ graph_div_elections|safe }}
+</div>
+{% endblock %}

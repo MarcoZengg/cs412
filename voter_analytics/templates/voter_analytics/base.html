@@ -1,0 +1,35 @@
+<!--
+File: base.html
+Author: Xiankun Zeng (xiankz23@bu.edu), 02/03/2026
+Description: Shared base layout for voter analytics pages.
+-->
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voter Analytics</title>
+    <link rel="stylesheet" href="{% static 'voter_analytics.css' %}">
+</head>
+<body class="va-body">
+    <!-- Site-wide header and primary navigation links. -->
+    <header class="va-header">
+        <div class="va-header-inner">
+            <div class="va-brand">
+                <h1>Voter Analytics</h1>
+                <span class="va-tagline">Newton voter records &amp; insights</span>
+            </div>
+            <nav class="va-nav" aria-label="Main">
+                <a href="{% url 'voters' %}" class="{% block nav_voters_class %}{% endblock %}">Voters</a>
+                <a href="{% url 'graphs' %}" class="{% block nav_graphs_class %}{% endblock %}">Graphs</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content area injected by child templates. -->
+    <main class="va-main">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!--
+File: voter_detail.html
+Author: Xiankun Zeng (xiankz23@bu.edu), 02/03/2026
+Description: Detail page for a single voter record.
+-->
+{% extends 'voter_analytics/base.html' %}
+{% block nav_voters_class %}va-nav-active{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Voter detail: {{ voter.first_name }} {{ voter.last_name }}</h2>
+    <p><a href="{% url 'voters' %}">Back to all voters</a></p>
+
+    <!-- Show all key attributes for the selected voter object. -->
+    <table class="va-detail-table">
+        <tr><th>Voter ID</th><td>{{ voter.voter_id }}</td></tr>
+        <tr><th>Last Name</th><td>{{ voter.last_name }}</td></tr>
+        <tr><th>First Name</th><td>{{ voter.first_name }}</td></tr>
+        <tr><th>Street Number</th><td>{{ voter.street_number }}</td></tr>
+        <tr><th>Street Name</th><td>{{ voter.street_name }}</td></tr>
+        <tr><th>Apartment Number</th><td>{{ voter.apartment_number|default:"-" }}</td></tr>
+        <tr><th>Zip Code</th><td>{{ voter.zip_code }}</td></tr>
+        <tr><th>Date of Birth</th><td>{{ voter.date_of_birth }}</td></tr>
+        <tr><th>Date of Registration</th><td>{{ voter.date_of_registration }}</td></tr>
+        <tr><th>Party Affiliation</th><td>{{ voter.party_affiliation }}</td></tr>
+        <tr><th>Precinct Number</th><td>{{ voter.precinct_number }}</td></tr>
+        <tr><th>v20state</th><td>{{ voter.v20state }}</td></tr>
+        <tr><th>v21town</th><td>{{ voter.v21town }}</td></tr>
+        <tr><th>v21primary</th><td>{{ voter.v21primary }}</td></tr>
+        <tr><th>v22general</th><td>{{ voter.v22general }}</td></tr>
+        <tr><th>v23town</th><td>{{ voter.v23town }}</td></tr>
+        <tr><th>Voter Score</th><td>{{ voter.voter_score }}</td></tr>
+    </table>
+
+    <!-- External map link for a quick location lookup. -->
+    <p>
+        <a href="{{ google_maps_url }}" target="_blank" rel="noopener noreferrer">
+            Open address in Google Maps
+        </a>
+    </p>
+    <p><a href="{% url 'voters' %}">Back to all voters</a></p>
+</div>
+{% endblock %}
