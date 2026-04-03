@@ -1,0 +1,38 @@
+<!--
+  File: base.html
+  Author: Xiankun Zeng (xiankz23@bu.edu), 04/03/2026
+  Description: Shared layout, navigation, and global styles for dadjokes pages.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Dad Jokes{% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+        nav { margin-bottom: 1.5rem; }
+        nav a { margin-right: 1rem; }
+        img { max-width: 100%; height: auto; }
+        /* Fixed square frame; object-fit crops wide/tall remote images evenly. */
+        .dj-picture-square {
+            width: 280px;
+            height: 280px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+        .meta { color: #555; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <!-- Primary navigation to home, random pair, and index pages. -->
+    <nav>
+        <a href="{% url 'dadjokes_home' %}">Home</a>
+        <a href="{% url 'dadjokes_random' %}">Random</a>
+        <a href="{% url 'dadjokes_jokes' %}">All jokes</a>
+        <a href="{% url 'dadjokes_pictures' %}">All pictures</a>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>

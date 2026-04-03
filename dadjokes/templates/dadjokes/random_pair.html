@@ -1,0 +1,28 @@
+<!--
+  File: random_pair.html
+  Author: Xiankun Zeng (xiankz23@bu.edu), 04/03/2026
+  Description: Home/random view: optional joke section and optional picture section.
+-->
+{% extends "dadjokes/base.html" %}
+{% block title %}Random joke & picture{% endblock %}
+{% block content %}
+<h1>Random joke &amp; picture</h1>
+{% if joke %}
+<section>
+    <h2>Joke</h2>
+    <p>{{ joke.text }}</p>
+    <p class="meta">By {{ joke.name }} — {{ joke.timestamp }}</p>
+</section>
+{% else %}
+<p>No jokes in the database yet.</p>
+{% endif %}
+{% if picture %}
+<section>
+    <h2>Picture</h2>
+    <p><img class="dj-picture-square" src="{{ picture.image_url }}" alt="Silly picture"></p>
+    <p class="meta">By {{ picture.name }} — {{ picture.timestamp }}</p>
+</section>
+{% else %}
+<p>No pictures in the database yet.</p>
+{% endif %}
+{% endblock %}

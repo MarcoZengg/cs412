@@ -18,6 +18,7 @@ from .views import (
     CreateCommentView,
     UpdateArticleView,
 )
+from .views import * # our view class definition 
 
 # URL patterns: each path maps a URL to a view and a name for reverse().
 urlpatterns = [
@@ -31,6 +32,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='blog/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/blog/show_all'), name='logout'),
     path('register/', UserRegistrationView.as_view(), name='register'),
+    path(r'api/articles/', ArticleListAPIView.as_view()),
+    path(r'api/article/<int:pk>', ArticleDetailAPIView.as_view()),
 ]
 # Serve static files (e.g. CSS) in development.
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

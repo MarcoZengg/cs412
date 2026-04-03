@@ -135,3 +135,20 @@ class UpdateArticleView(UpdateView):
     def form_valid(self, form):
         """Save the updated Article and redirect; delegate to superclass."""
         return super().form_valid(form)
+        
+
+from rest_framework import generics
+from .serializers import *
+ 
+class ArticleListAPIView(generics.ListCreateAPIView):
+  '''
+  An API view to return a listing of Articles 
+  and to create an Article.
+  '''
+  queryset = Article.objects.all()
+  serializer_class = ArticleSerializer
+ 
+class ArticleDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+  queryset = Article.objects.all()
+  serializer_class = ArticleSerializer
+ 

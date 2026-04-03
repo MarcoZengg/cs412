@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Django REST Framework (blog API views/serializers).
+    'rest_framework',
     'hw',
     'quotes',
     'restaurant',
@@ -45,7 +47,7 @@ INSTALLED_APPS = [
     'mini_insta',
     "marathon_analytics",
     "voter_analytics",
-
+    "dadjokes",
 ]
 
 MIDDLEWARE = [
@@ -139,3 +141,10 @@ CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
 if socket.gethostname() == CS_DEPLOYMENT_HOSTNAME:
     STATIC_URL = '/xiankz23/static/'
     MEDIA_URL = '/xiankz23/media/'
+
+
+REST_FRAMEWORK = {
+  'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+  'PAGE_SIZE': 10
+}
+ 

@@ -1,0 +1,22 @@
+<!--
+  File: joke_list.html
+  Author: Xiankun Zeng (xiankz23@bu.edu), 04/03/2026
+  Description: List all jokes with truncated preview links; empty state if none.
+-->
+{% extends "dadjokes/base.html" %}
+{% block title %}All jokes{% endblock %}
+{% block content %}
+<h1>All jokes</h1>
+{% if jokes %}
+<ul>
+    {% for j in jokes %}
+    <li>
+        <a href="{% url 'dadjokes_joke' j.pk %}">{{ j.text|truncatewords:15 }}</a>
+        <span class="meta">— {{ j.name }}</span>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No jokes yet.</p>
+{% endif %}
+{% endblock %}

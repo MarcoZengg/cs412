@@ -1,0 +1,13 @@
+<!--
+  File: joke_detail.html
+  Author: Xiankun Zeng (xiankz23@bu.edu), 04/03/2026
+  Description: Single joke text, contributor, timestamp, and link back to list.
+-->
+{% extends "dadjokes/base.html" %}
+{% block title %}Joke #{{ joke.pk }}{% endblock %}
+{% block content %}
+<h1>Joke</h1>
+<p>{{ joke.text }}</p>
+<p class="meta">By {{ joke.name }} — {{ joke.timestamp }}</p>
+<p><a href="{% url 'dadjokes_jokes' %}">Back to all jokes</a></p>
+{% endblock %}
