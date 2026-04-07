@@ -15,6 +15,14 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from .forms import CreatePostForm, CreateProfileForm, CreateCommentForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import (
+    CreatePostSerializer,
+    PostSerializer,
+    ProfileSerializer,
+)
 
 
 # -----------------------------------------------------------------------------
@@ -407,4 +415,68 @@ class SearchView(MiniInstaLoginRequiredMixin, ListView):
             Q(bio_text__icontains=query)
         )
         return context
+
+
+# -----------------------------------------------------------------------------
+# REST API views (Assignment 10 Task 1, no authentication).
+# -----------------------------------------------------------------------------
+class APIProfileListView(generics.ListAPIView):
+    """Return JSON for all profiles."""
+
+    queryset = Profile.objects.all().order_by("id")
+    serializer_class = ProfileSerializer
+    pagination_class = None
+
+
+class APIProfileDetailView(generics.RetrieveAPIView):
+    """Return JSON for a single profile by id."""
+
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class APIProfilePostsView(generics.ListAPIView):
+    """Return JSON posts (including pictures) for one profile."""
+
+    serializer_class = PostSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return Post.objects.filter(profile__pk=self.kwargs["pk"]).order_by("-timestamp")
+
+
+class APIProfileFeedView(generics.ListAPIView):
+    """Return JSON feed posts for one profile id."""
+
+    serializer_class = PostSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        profile = Profile.objects.filter(pk=self.kwargs["pk"]).first()
+        if profile is None:
+            return Post.objects.none()
+        return profile.get_post_feed()
+
+
+class APICreatePostView(APIView):
+    """Create a new post with optional one-or-many image URLs."""
+
+    def post(self, request):
+        serializer = CreatePostSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        post = serializer.save()
+
+        # Support either one image_url string or image_urls list in the payload.
+        image_url = request.data.get("image_url", "").strip()
+        if image_url:
+            Photo.objects.create(post=post, image_url=image_url)
+
+        image_urls = request.data.get("image_urls", [])
+        if isinstance(image_urls, list):
+            for url in image_urls:
+                clean_url = str(url).strip()
+                if clean_url:
+                    Photo.objects.create(post=post, image_url=clean_url)
+
+        return Response(PostSerializer(post).data, status=status.HTTP_201_CREATED)
 
