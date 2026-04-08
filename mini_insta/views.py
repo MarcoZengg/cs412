@@ -16,7 +16,7 @@ from django.shortcuts import render, redirect
 from .forms import CreatePostForm, CreateProfileForm, CreateCommentForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
 from rest_framework import generics, status
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -428,7 +428,7 @@ class SearchView(MiniInstaLoginRequiredMixin, ListView):
 class APIProfileListView(generics.ListAPIView):
     """Return JSON for all profiles. GET is public; unsafe methods disallowed by DRF."""
 
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all().order_by("id")
     serializer_class = ProfileSerializer
@@ -438,7 +438,7 @@ class APIProfileListView(generics.ListAPIView):
 class APIProfileDetailView(generics.RetrieveAPIView):
     """Return JSON for a single profile by id."""
 
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
@@ -447,7 +447,7 @@ class APIProfileDetailView(generics.RetrieveAPIView):
 class APIProfilePostsView(generics.ListAPIView):
     """Return JSON posts (including pictures) for one profile."""
 
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     pagination_class = None
@@ -459,7 +459,7 @@ class APIProfilePostsView(generics.ListAPIView):
 class APIProfileFeedView(generics.ListAPIView):
     """Return JSON feed posts for one profile id."""
 
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     pagination_class = None
@@ -474,7 +474,7 @@ class APIProfileFeedView(generics.ListAPIView):
 class APICreatePostView(APIView):
     """Create a new post; requires token. Post must belong to the authenticated user's Profile."""
 
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
