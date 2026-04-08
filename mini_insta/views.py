@@ -484,7 +484,7 @@ class APIProfileFeedView(generics.ListAPIView):
 class APICreatePostView(APIView):
     """Create a new post; requires token. Post must belong to the authenticated user's Profile."""
 
-    authentication_classes = [HeaderFallbackTokenAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
