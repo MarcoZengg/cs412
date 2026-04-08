@@ -478,7 +478,7 @@ class APICreatePostView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        return Response({"auth": request.META.get("HTTP_AUTHORIZATION")})
+        # return Response({"auth": request.META.get("HTTP_AUTHORIZATION")})
         user_profile = Profile.objects.filter(user=request.user).first()
         if user_profile is None:
             return Response(
@@ -555,3 +555,15 @@ class UserLoginView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+class APIDebugAuthView(APIView):
+    """Temporary debug endpoint — shows what headers Apache passes to Django."""
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def get(self, request):
+        return Response({
+            "HTTP_AUTHORIZATION": request.META.get("HTTP_AUTHORIZATION"),
+            "HTTP_X_AUTH_TOKEN": request.META.get("HTTP_X_AUTH_TOKEN"),
+        })
+    def post(self, request):
+        return self.get(request)

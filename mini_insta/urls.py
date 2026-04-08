@@ -35,6 +35,7 @@ from .views import (
     APICreatePostView,
     UserRegistrationView,
     UserLoginView,
+    APIDebugAuthView,
 )
 
 # -----------------------------------------------------------------------------
@@ -75,7 +76,7 @@ urlpatterns = [
     path('api/posts/create/', APICreatePostView.as_view(), name='api_create_post'),
     path('api/register/', UserRegistrationView.as_view(), name='api_register'),
     path('api/login/', UserLoginView.as_view(), name='api_login'),
-
+    path('api/debug-auth/', APIDebugAuthView.as_view(), name='api_debug_auth'),
 ]
 # Serve static files (e.g. CSS) in development.
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
