@@ -33,6 +33,16 @@ from .serializers import (
 # -----------------------------------------------------------------------------
 # Mixin: require login and provide helpers for the logged-in user's Profile.
 # -----------------------------------------------------------------------------
+class HeaderFallbackTokenAuthentication(TokenAuthentication):
+    """Read token from X-Auth-Token first, then fall back to Authorization."""
+
+    def authenticate(self, request):
+        x_auth_token = request.META.get("HTTP_X_AUTH_TOKEN")
+        if x_auth_token:
+            return self.authenticate_credentials(x_auth_token)
+        return super().authenticate(request)
+
+
 class MiniInstaLoginRequiredMixin(LoginRequiredMixin):
     """Require authentication; redirect to login with ?next= for post-login redirect."""
 
@@ -428,7 +438,7 @@ class SearchView(MiniInstaLoginRequiredMixin, ListView):
 class APIProfileListView(generics.ListAPIView):
     """Return JSON for all profiles. GET is public; unsafe methods disallowed by DRF."""
 
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all().order_by("id")
     serializer_class = ProfileSerializer
@@ -438,7 +448,7 @@ class APIProfileListView(generics.ListAPIView):
 class APIProfileDetailView(generics.RetrieveAPIView):
     """Return JSON for a single profile by id."""
 
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
@@ -447,7 +457,7 @@ class APIProfileDetailView(generics.RetrieveAPIView):
 class APIProfilePostsView(generics.ListAPIView):
     """Return JSON posts (including pictures) for one profile."""
 
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     pagination_class = None
@@ -459,7 +469,7 @@ class APIProfilePostsView(generics.ListAPIView):
 class APIProfileFeedView(generics.ListAPIView):
     """Return JSON feed posts for one profile id."""
 
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     pagination_class = None
@@ -474,7 +484,7 @@ class APIProfileFeedView(generics.ListAPIView):
 class APICreatePostView(APIView):
     """Create a new post; requires token. Post must belong to the authenticated user's Profile."""
 
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

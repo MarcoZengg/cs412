@@ -5,4 +5,3 @@ RewriteEngine On
 # Forward standard Authorization header into WSGI env for DRF TokenAuthentication.
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
-
