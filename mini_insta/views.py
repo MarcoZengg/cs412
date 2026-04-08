@@ -478,6 +478,7 @@ class APICreatePostView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        return Response({"auth": request.META.get("HTTP_AUTHORIZATION")})
         user_profile = Profile.objects.filter(user=request.user).first()
         if user_profile is None:
             return Response(
