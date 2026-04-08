@@ -33,6 +33,8 @@ from .views import (
     APIProfilePostsView,
     APIProfileFeedView,
     APICreatePostView,
+    UserRegistrationView,
+    UserLoginView,
 )
 
 # -----------------------------------------------------------------------------
@@ -65,12 +67,15 @@ urlpatterns = [
     path('post/<int:pk>/delete_like', DeleteLikeView.as_view(), name='delete_like'),
     path('post/<int:pk>/delete', DeletePostView.as_view(), name='delete_post'),
     path('post/<int:pk>/update', UpdatePostView.as_view(), name='update_post'),
-    # API endpoints (Assignment 10 Task 1; no authentication yet):
+    # API endpoints (Assignment 10): profiles/posts/feed + token login/register.
     path('api/profiles/', APIProfileListView.as_view(), name='api_profiles'),
     path('api/profiles/<int:pk>/', APIProfileDetailView.as_view(), name='api_profile'),
     path('api/profiles/<int:pk>/posts/', APIProfilePostsView.as_view(), name='api_profile_posts'),
     path('api/profiles/<int:pk>/feed/', APIProfileFeedView.as_view(), name='api_profile_feed'),
     path('api/posts/create/', APICreatePostView.as_view(), name='api_create_post'),
+    path('api/register/', UserRegistrationView.as_view(), name='api_register'),
+    path('api/login/', UserLoginView.as_view(), name='api_login'),
+
 ]
 # Serve static files (e.g. CSS) in development.
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

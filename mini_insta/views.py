@@ -16,12 +16,17 @@ from django.shortcuts import render, redirect
 from .forms import CreatePostForm, CreateProfileForm, CreateCommentForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
 from rest_framework import generics, status
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 from .serializers import (
     CreatePostSerializer,
     PostSerializer,
     ProfileSerializer,
+    UserSerializer,
 )
 
 
@@ -418,11 +423,13 @@ class SearchView(MiniInstaLoginRequiredMixin, ListView):
 
 
 # -----------------------------------------------------------------------------
-# REST API views (Assignment 10 Task 1, no authentication).
+# REST API views (Assignment 10). Task 3: Token auth + permissions on views.
 # -----------------------------------------------------------------------------
 class APIProfileListView(generics.ListAPIView):
-    """Return JSON for all profiles."""
+    """Return JSON for all profiles. GET is public; unsafe methods disallowed by DRF."""
 
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all().order_by("id")
     serializer_class = ProfileSerializer
     pagination_class = None
@@ -431,6 +438,8 @@ class APIProfileListView(generics.ListAPIView):
 class APIProfileDetailView(generics.RetrieveAPIView):
     """Return JSON for a single profile by id."""
 
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
@@ -438,6 +447,8 @@ class APIProfileDetailView(generics.RetrieveAPIView):
 class APIProfilePostsView(generics.ListAPIView):
     """Return JSON posts (including pictures) for one profile."""
 
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     pagination_class = None
 
@@ -448,6 +459,8 @@ class APIProfilePostsView(generics.ListAPIView):
 class APIProfileFeedView(generics.ListAPIView):
     """Return JSON feed posts for one profile id."""
 
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     pagination_class = None
 
@@ -459,11 +472,28 @@ class APIProfileFeedView(generics.ListAPIView):
 
 
 class APICreatePostView(APIView):
-    """Create a new post with optional one-or-many image URLs."""
+    """Create a new post; requires token. Post must belong to the authenticated user's Profile."""
+
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        user_profile = Profile.objects.filter(user=request.user).first()
+        if user_profile is None:
+            return Response(
+                {"detail": "No MiniInsta profile is linked to this user."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        target_profile = serializer.validated_data["profile"]
+        if target_profile.pk != user_profile.pk:
+            return Response(
+                {"detail": "You may only create posts for your own profile."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         post = serializer.save()
 
         # Support either one image_url string or image_urls list in the payload.
@@ -480,3 +510,47 @@ class APICreatePostView(APIView):
 
         return Response(PostSerializer(post).data, status=status.HTTP_201_CREATED)
 
+
+class UserRegistrationView(generics.CreateAPIView):
+    """Sign-up: create User (password hashed). No token required."""
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    serializer_class = UserSerializer
+
+
+class UserLoginView(APIView):
+    """Sign-in: return DRF auth token and linked Profile id for the mobile client."""
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if not username or not password:
+            return Response(
+                {"detail": "Username and password are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = authenticate(
+            request=request,
+            username=username,
+            password=password,
+        )
+        if user is None:
+            return Response(
+                {"detail": "Invalid credentials."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        token, _created = Token.objects.get_or_create(user=user)
+        profile = Profile.objects.filter(user=user).first()
+        return Response(
+            {
+                "token": token.key,
+                "profile_id": profile.pk if profile else None,
+            },
+            status=status.HTTP_200_OK,
+        )
