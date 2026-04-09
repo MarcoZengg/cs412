@@ -37,6 +37,8 @@ class HeaderFallbackTokenAuthentication(TokenAuthentication):
     """Read token from X-Auth-Token first, then fall back to Authorization."""
 
     def authenticate(self, request):
+        # Some deployment setups drop HTTP_AUTHORIZATION before Django sees it.
+        # Accept a fallback header so authenticated API calls still work reliably.
         x_auth_token = request.META.get("HTTP_X_AUTH_TOKEN")
         if x_auth_token:
             return self.authenticate_credentials(x_auth_token)
@@ -438,6 +440,7 @@ class SearchView(MiniInstaLoginRequiredMixin, ListView):
 class APIProfileListView(generics.ListAPIView):
     """Return JSON for all profiles. GET is public; unsafe methods disallowed by DRF."""
 
+    # Read-only endpoint: allow anonymous reads while still supporting authenticated context.
     authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all().order_by("id")
@@ -448,6 +451,7 @@ class APIProfileListView(generics.ListAPIView):
 class APIProfileDetailView(generics.RetrieveAPIView):
     """Return JSON for a single profile by id."""
 
+    # Same policy as list: public read, no write methods exposed on this view.
     authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Profile.objects.all()
@@ -457,6 +461,7 @@ class APIProfileDetailView(generics.RetrieveAPIView):
 class APIProfilePostsView(generics.ListAPIView):
     """Return JSON posts (including pictures) for one profile."""
 
+    # Posts can be viewed publicly; this endpoint does not mutate data.
     authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
@@ -469,6 +474,7 @@ class APIProfilePostsView(generics.ListAPIView):
 class APIProfileFeedView(generics.ListAPIView):
     """Return JSON feed posts for one profile id."""
 
+    # Feed retrieval is read-only; auth is optional for viewing.
     authentication_classes = [HeaderFallbackTokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
@@ -484,11 +490,12 @@ class APIProfileFeedView(generics.ListAPIView):
 class APICreatePostView(APIView):
     """Create a new post; requires token. Post must belong to the authenticated user's Profile."""
 
+    # Create endpoint must authenticate caller and reject anonymous requests.
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # return Response({"auth": request.META.get("HTTP_AUTHORIZATION")})
+        # Resolve the profile linked to the authenticated Django user.
         user_profile = Profile.objects.filter(user=request.user).first()
         if user_profile is None:
             return Response(
@@ -496,9 +503,11 @@ class APICreatePostView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Validate payload shape and relation IDs before creating any records.
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         target_profile = serializer.validated_data["profile"]
+        # Prevent clients from creating posts on behalf of another profile.
         if target_profile.pk != user_profile.pk:
             return Response(
                 {"detail": "You may only create posts for your own profile."},
@@ -525,6 +534,7 @@ class APICreatePostView(APIView):
 class UserRegistrationView(generics.CreateAPIView):
     """Sign-up: create User (password hashed). No token required."""
 
+    # New users must be able to register before having credentials.
     authentication_classes = []
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
@@ -533,6 +543,7 @@ class UserRegistrationView(generics.CreateAPIView):
 class UserLoginView(APIView):
     """Sign-in: return DRF auth token and linked Profile id for the mobile client."""
 
+    # Login endpoint cannot require prior auth by definition.
     authentication_classes = []
     permission_classes = [AllowAny]
 
@@ -557,6 +568,7 @@ class UserLoginView(APIView):
             )
 
         token, _created = Token.objects.get_or_create(user=user)
+        # Return profile_id with token so clients can immediately fetch profile/feed resources.
         profile = Profile.objects.filter(user=user).first()
         return Response(
             {
