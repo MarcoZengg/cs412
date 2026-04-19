@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Submit Guess</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "round_list" %}">Back to Rounds</a> |
+    <a href="{% url "round_detail" round.pk %}">Back to Round Detail</a>
+  </p>
+
+  <h1>Submit Guess for Round {{ round.round_number }}</h1>
+  <p>Location: {{ round.location.name }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Guess</button>
+  </form>
+</body>
+</html>

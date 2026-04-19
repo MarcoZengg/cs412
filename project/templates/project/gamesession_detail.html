@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Game Session Detail</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "gamesession_list" %}">Back to Sessions</a> |
+    <a href="{% url 'gamesession_delete' session.pk %}">Delete This Session</a>
+  </p>
+
+  <h1>Session {{ session.pk }}</h1>
+  <p>
+    <a href="{% url 'round_start' session.pk %}">Start Next Round</a>
+  </p>
+  <ul>
+    <li>Player: {{ session.player }}</li>
+    <li>Difficulty: {{ session.get_difficulty_display }}</li>
+    <li>Total rounds: {{ session.total_rounds }}</li>
+    <li>Total score: {{ session.total_score }}</li>
+    <li>Started: {{ session.start_time }}</li>
+    <li>Ended: {{ session.end_time|default:'In progress' }}</li>
+  </ul>
+
+  <h2>Rounds in this Session</h2>
+  {% with rounds=session.rounds.all %}
+  {% if rounds %}
+    <ol>
+      {% for r in rounds %}
+        <li>
+          <a href="{% url 'round_detail' r.pk %}">Round {{ r.round_number }}</a>
+          - Score: {{ r.score }}
+          - Distance: {{ r.distance_km|default:'N/A' }} km
+          - <a href="{% url 'round_submit' r.pk %}">Submit guess for this round</a>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p>No rounds yet.</p>
+  {% endif %}
+  {% endwith %}
+</body>
+</html>

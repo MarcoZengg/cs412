@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Game Sessions</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "gamesession_start" %}">Start New Session</a> |
+    <a href="{% url "gamesession_stats" %}">Stats Report</a>
+  </p>
+  <h1>Game Sessions</h1>
+
+  {% if sessions %}
+    <ul>
+      {% for session in sessions %}
+        <li>
+          <a href="{% url 'gamesession_detail' session.pk %}">
+            Session {{ session.pk }}
+          </a>
+          - Player: {{ session.player }}
+          - Score: {{ session.total_score }}
+          - Difficulty: {{ session.get_difficulty_display }}
+          - <a href="{% url 'gamesession_delete' session.pk %}">Delete</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No game sessions yet.</p>
+  {% endif %}
+</body>
+</html>

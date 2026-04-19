@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Rounds</title>
+</head>
+<body>
+  <p><a href="{% url "project_home" %}">Home</a></p>
+  <h1>Rounds</h1>
+
+  {% if rounds %}
+    <ul>
+      {% for round in rounds %}
+        <li>
+          <a href="{% url 'round_detail' round.pk %}">
+            Session {{ round.game_session_id }} - Round {{ round.round_number }}
+          </a>
+          - Location: {{ round.location.name }}
+          - Score: {{ round.score }}
+          - <a href="{% url 'round_submit' round.pk %}">Submit Guess</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No rounds yet.</p>
+  {% endif %}
+</body>
+</html>

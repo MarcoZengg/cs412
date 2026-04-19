@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Project Login</title>
+</head>
+<body>
+  <p><a href="{% url "project_home" %}">Back to Home</a></p>
+
+  <h1>Login</h1>
+  <p>Sign in to access game sessions and rounds.</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Log In</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>GeoGuesser Project Home</title>
+</head>
+<body>
+  <h1>GeoGuesser Project</h1>
+  <p>Use these links to browse the project models.</p>
+  {% if user.is_authenticated %}
+    <p>
+      Signed in as <strong>{{ user.username }}</strong>
+      (<a href="{% url "project_account_detail" %}">My account</a>).
+      <form method="post" action="{% url "project_logout" %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Log Out</button>
+      </form>
+    </p>
+  {% else %}
+    <p>
+      <a href="{% url "project_login" %}">Log In</a> or
+      <a href="{% url "project_create_account" %}">Create Account</a>.
+    </p>
+  {% endif %}
+
+  <ul>
+    {% if not user.is_authenticated %}
+      <li><a href="{% url "project_create_account" %}">Create Account</a></li>
+    {% endif %}
+    <li><a href="{% url "location_list" %}">Locations</a></li>
+    <li><a href="{% url "gamesession_list" %}">Game Sessions</a></li>
+    <li><a href="{% url "gamesession_start" %}">Start New Game Session</a></li>
+    <li><a href="{% url "gamesession_stats" %}">Game Session Stats Report</a></li>
+    <li><a href="{% url "round_list" %}">Rounds</a></li>
+  </ul>
+</body>
+</html>

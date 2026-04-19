@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Locations</title>
+</head>
+<body>
+  <p><a href="{% url "project_home" %}">Home</a></p>
+  <h1>Locations</h1>
+
+  {% if locations %}
+    <ul>
+      {% for location in locations %}
+        <li>
+          <a href="{% url 'location_detail' location.pk %}">
+            {{ location.name }} ({{ location.country }})
+          </a>
+          - {{ location.get_difficulty_display }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No locations yet.</p>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Round Detail</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "round_list" %}">Back to Rounds</a> |
+    <a href="{% url 'gamesession_detail' round.game_session.pk %}">Session {{ round.game_session.pk }}</a> |
+    <a href="{% url 'round_submit' round.pk %}">Submit / Update Guess</a>
+  </p>
+
+  <h1>Round {{ round.round_number }}</h1>
+  <ul>
+    <li>Session: {{ round.game_session.pk }}</li>
+    <li>Location: <a href="{% url 'location_detail' round.location.pk %}">{{ round.location.name }}</a></li>
+    <li>Guess latitude: {{ round.guess_latitude|default:'N/A' }}</li>
+    <li>Guess longitude: {{ round.guess_longitude|default:'N/A' }}</li>
+    <li>Distance (km): {{ round.distance_km|default:'N/A' }}</li>
+    <li>Score: {{ round.score }}</li>
+  </ul>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Start Round</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "gamesession_detail" session.pk %}">Back to Session {{ session.pk }}</a>
+  </p>
+
+  <h1>Start Round {{ next_round_number }}</h1>
+  <p>Session difficulty: {{ session.get_difficulty_display }}</p>
+  <p>Remaining rounds: {{ remaining_rounds }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Round</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Start Game Session</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "gamesession_list" %}">Back to Sessions</a>
+  </p>
+
+  <h1>Start a New Game Session</h1>
+  <p>Choose difficulty and number of rounds, then submit.</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Start Session</button>
+  </form>
+</body>
+</html>

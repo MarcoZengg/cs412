@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Create Account</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Back to Home</a>
+  </p>
+
+  <h1>Create Account</h1>
+  <p>Create a username/password account for this game app.</p>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <fieldset>
+      <legend>Login Credentials</legend>
+      {{ form.as_p }}
+    </fieldset>
+
+    <button type="submit">Create Account</button>
+  </form>
+</body>
+</html>

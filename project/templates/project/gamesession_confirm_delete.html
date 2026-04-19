@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Delete Game Session</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "gamesession_detail" session.pk %}">Back to Session {{ session.pk }}</a>
+  </p>
+
+  <h1>Delete Session {{ session.pk }}</h1>
+  <p>
+    This action will delete the session and all related rounds.
+    This cannot be undone.
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm Delete</button>
+  </form>
+</body>
+</html>

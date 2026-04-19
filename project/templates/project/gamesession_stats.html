@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Game Session Stats</title>
+</head>
+<body>
+  <p>
+    <a href="{% url "project_home" %}">Home</a> |
+    <a href="{% url "gamesession_list" %}">Back to Sessions</a>
+  </p>
+
+  <h1>Game Session Report</h1>
+
+  <ul>
+    <li>Completed game sessions: {{ completed_session_count }}</li>
+    <li>Best game score: {{ best_game_score }}</li>
+    <li>Total average game score: {{ avg_game_score_total|floatformat:2 }}</li>
+  </ul>
+
+  <h2>Average Score by Difficulty</h2>
+  {% if avg_score_by_difficulty %}
+    <ul>
+      {% for row in avg_score_by_difficulty %}
+        <li>{{ row.difficulty }}: {{ row.avg_score|floatformat:2 }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No completed sessions yet.</p>
+  {% endif %}
+</body>
+</html>
