@@ -16,8 +16,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load django/.env for local secrets (GOOGLE_MAPS_* etc.). File is gitignored.
-load_dotenv(BASE_DIR / ".env")
+# Prefer server-side secrets file in deployment; fall back to local django/.env.
+SERVER_ENV_PATH = Path("/home/ugrad/xiankz23/secrets/geoguesser/.env")
+LOCAL_ENV_PATH = BASE_DIR / ".env"
+if SERVER_ENV_PATH.exists():
+    load_dotenv(SERVER_ENV_PATH)
+else:
+    load_dotenv(LOCAL_ENV_PATH)
 
 
 # Quick-start development settings - unsuitable for production
