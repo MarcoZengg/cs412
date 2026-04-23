@@ -1,24 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Delete Game Session</title>
-</head>
-<body>
-  <p>
-    <a href="{% url "project_home" %}">Home</a> |
-    <a href="{% url "gamesession_detail" session.pk %}">Back to Session {{ session.pk }}</a>
-  </p>
+{% extends "project/base.html" %}
 
-  <h1>Delete Session {{ session.pk }}</h1>
-  <p>
-    This action will delete the session and all related rounds.
-    This cannot be undone.
-  </p>
+{% block title %}Delete Session {{ session.pk }} · GeoGuesser{% endblock %}
 
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Confirm Delete</button>
-  </form>
-</body>
-</html>
+{% block subnav %}
+  <nav class="subnav" aria-label="Section">
+    <a href="{% url 'gamesession_detail' session.pk %}">Back to Session {{ session.pk }}</a>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <section class="auth-center">
+    <h1>Delete Session {{ session.pk }}</h1>
+    <div class="delete-warning">
+      <p>This action will delete the session and all related rounds. This cannot be undone.</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" class="danger">Confirm Delete</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

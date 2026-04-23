@@ -1,0 +1,19 @@
+{% extends "project/base.html" %}
+
+{% block title %}Activity · GeoGuesser{% endblock %}
+
+{% block content %}
+  <section class="auth-center">
+    <h1>Activity</h1>
+    <p class="lead">Quick links to your gameplay pages.</p>
+
+    <section class="activity-cards" aria-label="Activity links">
+      <a href="{% url 'gamesession_list' %}" class="activity-card" data-hover="Open Sessions">
+        <span class="activity-card__label">Game Sessions</span>
+      </a>
+      <a href="{% url 'round_list' %}" class="activity-card" data-hover="Open Rounds">
+        <span class="activity-card__label">Rounds</span>
+      </a>
+    </section>
+  </section>
+{% endblock %}

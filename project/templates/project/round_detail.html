@@ -1,25 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Round Detail</title>
-</head>
-<body>
-  <p>
-    <a href="{% url "project_home" %}">Home</a> |
-    <a href="{% url "round_list" %}">Back to Rounds</a> |
-    <a href="{% url 'gamesession_detail' round.game_session.pk %}">Session {{ round.game_session.pk }}</a> |
-    <a href="{% url 'round_submit' round.pk %}">Submit / Update Guess</a>
-  </p>
+{% extends "project/base.html" %}
+{% load static %}
 
-  <h1>Round {{ round.round_number }}</h1>
-  <ul>
-    <li>Session: {{ round.game_session.pk }}</li>
-    <li>Location: <a href="{% url 'location_detail' round.location.pk %}">{{ round.location.name }}</a></li>
-    <li>Guess latitude: {{ round.guess_latitude|default:'N/A' }}</li>
-    <li>Guess longitude: {{ round.guess_longitude|default:'N/A' }}</li>
-    <li>Distance (km): {{ round.distance_km|default:'N/A' }}</li>
-    <li>Score: {{ round.score }}</li>
-  </ul>
-</body>
-</html>
+{% block title %}Round {{ round.round_number }} · GeoGuesser{% endblock %}
+
+{% block extra_head %}
+  {% include "project/includes/google_maps_head.html" %}
+{% endblock %}
+
+{% block subnav %}
+  <nav class="subnav" aria-label="Section">
+    <a href="{% url 'gamesession_detail' round.game_session.pk %}">Session {{ round.game_session.pk }}</a>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <section class="auth-center auth-center--wide">
+    {% include "project/includes/session_stepper.html" %}
+    <h1>Round {{ round.round_number }}</h1>
+    <div class="round-score-standalone" aria-label="Round score">
+      <p class="round-score-standalone__label">Score</p>
+      <p
+        class="round-score-standalone__value"
+        data-countup
+        data-countup-from="0"
+        data-countup-to="{{ round.score|default:0 }}"
+        data-countup-duration="2"
+      >{{ round.score|default:0 }}</p>
+    </div>
+    <!-- <ul class="detail-list">
+      <li>Session: {{ round.game_session.pk }}</li>
+      <li>Location: <a href="{% url 'location_detail' round.location.pk %}">{{ round.location.name }}</a></li>
+      <li>Guess latitude: {{ round.guess_latitude|default:'N/A' }}</li>
+      <li>Guess longitude: {{ round.guess_longitude|default:'N/A' }}</li>
+      <li>Distance (km): {{ round.distance_km|default:'N/A' }}</li>
+      <li>Score: {{ round.score }}</li>
+    </ul> -->
+
+    <section class="round-map-section" aria-label="Map">
+      <div class="round-map-section__head">
+        <h2>Map</h2>
+        <div class="round-map-section__actions">
+          {% if round.game_session.end_time is None %}
+            <form method="post" action="{% url 'round_start' round.game_session.pk %}" class="round-map-section__action-form">
+              {% csrf_token %}
+              <button type="submit">Next Round</button>
+            </form>
+          {% else %}
+            <a href="{% url 'gamesession_detail' round.game_session.pk %}" class="button">Continue</a>
+          {% endif %}
+        </div>
+      </div>
+      {% if google_maps_enabled %}
+      <p class="lead">
+        Blue marker: actual location.
+        {% if round.guess_latitude is not None and round.guess_longitude is not None %}
+          Orange marker: your guess. The view zooms to fit both points.
+        {% else %}
+          Submit a guess to compare your pick to the answer.
+        {% endif %}
+      </p>
+      <div
+        id="round-map-root"
+        class="round-map-wrap"
+        data-actual-lat="{{ round.location.latitude }}"
+        data-actual-lng="{{ round.location.longitude }}"
+        {% if round.guess_latitude is not None %}data-guess-lat="{{ round.guess_latitude }}"{% endif %}
+        {% if round.guess_longitude is not None %}data-guess-lng="{{ round.guess_longitude }}"{% endif %}
+      >
+        {# gmp-map web component: center and zoom are required; map-id required for Advanced Markers #}
+        <gmp-map
+          center="{{ round.location.latitude }},{{ round.location.longitude }}"
+          zoom="3"
+          map-id="{{ google_maps_map_id }}"
+          style="width:100%;height:500px;border-radius:10px;"
+        ></gmp-map>
+      </div>
+      {% else %}
+      <p class="empty-state">
+        Set the environment variable <code>GOOGLE_MAPS_API_KEY</code> and optionally
+        <code>GOOGLE_MAPS_MAP_ID</code> (see <a href="https://developers.google.com/maps/documentation/javascript/add-google-map#gmp-map-element" rel="noopener noreferrer">Add a Google Map</a>)
+        to enable the interactive map.
+      </p>
+      {% endif %}
+    </section>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script defer src="{% static 'project/countup.js' %}"></script>
+  {% if google_maps_enabled %}
+    <script defer src="{% static 'project/round-map.js' %}"></script>
+  {% endif %}
+{% endblock %}

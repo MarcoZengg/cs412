@@ -1,19 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Project Login</title>
-</head>
-<body>
-  <p><a href="{% url "project_home" %}">Back to Home</a></p>
+{% extends "project/base.html" %}
 
-  <h1>Login</h1>
-  <p>Sign in to access game sessions and rounds.</p>
+{% block title %}Log in · GeoGuesser{% endblock %}
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Log In</button>
-  </form>
-</body>
-</html>
+{% block content %}
+  <section class="auth-center">
+    <h1>Log in</h1>
+    <p class="lead">Sign in to access game sessions and rounds.</p>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button type="submit">Log In</button>
+      </div>
+      <div class="auth-or-divider" role="separator" aria-label="or">
+        <span>or</span>
+      </div>
+      <div class="form-actions">
+        <a href="{% url 'project_create_account' %}" class="button">Create Account</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

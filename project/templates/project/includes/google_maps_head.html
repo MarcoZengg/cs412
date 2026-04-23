@@ -1,0 +1,14 @@
+{% comment %}
+Shared Google Maps JS API loader. Previously duplicated in extra_head of
+round_detail.html and round_submit_form.html.
+
+Requires these context vars (provided by google_maps_context in views.py):
+  google_maps_enabled, google_maps_api_key
+{% endcomment %}
+{% if google_maps_enabled %}
+  {# See https://developers.google.com/maps/documentation/javascript/load-maps-js-api #}
+  <script
+    async
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=maps,marker&v=weekly&loading=async"
+  ></script>
+{% endif %}

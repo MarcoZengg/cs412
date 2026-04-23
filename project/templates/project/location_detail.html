@@ -1,17 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Location Detail</title>
-</head>
-<body>
-  <p>
-    <a href="{% url "project_home" %}">Home</a> |
-    <a href="{% url "location_list" %}">Back to Locations</a>
-  </p>
+{% extends "project/base.html" %}
 
+{% block title %}{{ location.name }} · GeoGuesser{% endblock %}
+
+{% block subnav %}
+  <nav class="subnav" aria-label="Section">
+    <a href="{% url 'location_list' %}">Back to Locations</a>
+  </nav>
+{% endblock %}
+
+{% block content %}
   <h1>{{ location.name }}</h1>
-  <ul>
+  <ul class="detail-list">
     <li>Country: {{ location.country }}</li>
     <li>Difficulty: {{ location.get_difficulty_display }}</li>
     <li>Latitude: {{ location.latitude }}</li>
@@ -19,11 +18,10 @@
     <li>
       Street View URL:
       {% if location.street_view_url %}
-        <a href="{{ location.street_view_url }}" target="_blank">Open Street View</a>
+        <a href="{{ location.street_view_url }}" target="_blank" rel="noopener noreferrer">Open Street View</a>
       {% else %}
         Not provided
       {% endif %}
     </li>
   </ul>
-</body>
-</html>
+{% endblock %}

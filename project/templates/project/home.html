@@ -1,37 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>GeoGuesser Project Home</title>
-</head>
-<body>
-  <h1>GeoGuesser Project</h1>
-  <p>Use these links to browse the project models.</p>
-  {% if user.is_authenticated %}
-    <p>
-      Signed in as <strong>{{ user.username }}</strong>
-      (<a href="{% url "project_account_detail" %}">My account</a>).
-      <form method="post" action="{% url "project_logout" %}" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">Log Out</button>
-      </form>
-    </p>
-  {% else %}
-    <p>
-      <a href="{% url "project_login" %}">Log In</a> or
-      <a href="{% url "project_create_account" %}">Create Account</a>.
-    </p>
-  {% endif %}
 
-  <ul>
-    {% if not user.is_authenticated %}
-      <li><a href="{% url "project_create_account" %}">Create Account</a></li>
-    {% endif %}
-    <li><a href="{% url "location_list" %}">Locations</a></li>
-    <li><a href="{% url "gamesession_list" %}">Game Sessions</a></li>
-    <li><a href="{% url "gamesession_start" %}">Start New Game Session</a></li>
-    <li><a href="{% url "gamesession_stats" %}">Game Session Stats Report</a></li>
-    <li><a href="{% url "round_list" %}">Rounds</a></li>
-  </ul>
-</body>
-</html>
+{% extends "project/base.html" %}
+{% load static %}
+
+
+{% block title %}GeoGuesser · Home{% endblock %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block content %}
+  <section class="home-hero" data-home-hero>
+    <div class="home-hero__sticky">
+      <canvas
+        class="home-hero__canvas"
+        data-home-hero-canvas
+        data-frame-count="354"
+        data-frame-base="{% static 'project/globe_video_frame_jpg/' %}"
+        data-frame-prefix=""
+        data-frame-ext=".jpg"
+        data-frame-pad="5"
+        aria-label="Animated world travel intro"
+      ></canvas>
+      <div class="home-hero__overlay">
+        <!-- <p>GeoGuesser Project</p> -->
+        <h1>Explore The World</h1>
+        <p class="lead">Scroll down to animate the world journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-content" data-reveal>
+    <!-- <p class="lead">Browse locations, run game sessions, submit guesses, and view your stats.</p> -->
+
+    <section class="how-it-works" aria-labelledby="how-it-works-title" data-reveal>
+      <h1 id="how-it-works-title">How It Works</h1>
+      <div class="how-it-works__stack">
+        <article class="how-it-works__card" data-reveal data-reveal-delay="0ms">
+          <div class="how-it-works__split">
+            <div class="how-it-works__copy">
+              <p class="how-it-works__label">Step 1</p>
+              <h3>Get Dropped Anywhere</h3>
+              <p>You’re placed in a random real-world Street View location. Investigate the Clues, Pan around, inspect buildings, signs, terrain, and road markings to figure out where you are.</p>
+            </div>
+            <img
+              class="how-it-works__image"
+              src="{% static 'project/street-view.jpg' %}"
+              alt="Street View sample location preview"
+            >
+          </div>
+        </article>
+        <article class="how-it-works__card" data-reveal data-reveal-delay="90ms">
+          <div class="how-it-works__split">
+            <img
+              class="how-it-works__image"
+              src="{% static 'project/step2.png' %}"
+              alt="Map interface for placing your guess"
+            >
+            <div class="how-it-works__copy">
+              <p class="how-it-works__label">Step 2</p>
+              <h3>Place Your Pin</h3>
+              <p>Use Google Maps to zoom, pan, and compare regions, then place your pin exactly where you believe the Street View location is on the map.</p>
+            </div>
+          </div>
+        </article>
+        <article class="how-it-works__card" data-reveal data-reveal-delay="180ms">
+          <div class="how-it-works__split">
+            <div class="how-it-works__copy">
+              <p class="how-it-works__label">Step 3</p>
+              <h3>See Your Score</h3>
+              <p>Compare your guess to the real location, see the distance, and earn points based on accuracy.</p>
+            </div>
+            <img
+              class="how-it-works__image"
+              src="{% static 'project/step3.png' %}"
+              alt="Round results and score summary"
+            >
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="more-than-game" aria-labelledby="more-than-game-title" data-reveal>
+      <h1 id="more-than-game-title">More Than a Game</h1>
+      <div class="more-than-game__card">
+        <!-- <p class="lead more-than-game__lead">
+          GeoGuesser sharpens map intuition, teaches world geography, and turns every round into a mini travel adventure.
+        </p> -->
+        <div class="more-than-game__points">
+          <article class="more-than-game__point-card" data-reveal data-reveal-delay="0ms">
+            <span class="more-than-game__point-icon" aria-hidden="true">
+              <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.68675 15.6451L4.59494 14.5435C4.6983 14.4839 4.8196 14.4631 4.9369 14.4851L8.6914 15.1878C8.99995 15.2455 9.28478 15.008 9.28338 14.6941L9.26876 11.4045C9.26836 11.3151 9.29193 11.2272 9.33701 11.15L11.2317 7.90621C11.3303 7.73739 11.3215 7.52658 11.2091 7.3666L8.01892 2.82568M19.0002 4.85905C13.5002 7.50004 16.5 11 17.5002 11.5C19.3773 12.4384 21.9876 12.5 21.9876 12.5C21.9958 12.3344 22 12.1677 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C12.1677 22 12.3344 21.9959 12.5 21.9877M16.7578 21.9398L13.591 13.591L21.9398 16.7578L18.2376 18.2376L16.7578 21.9398Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>Learn countries, regions, and cultural landmarks through real-world clues you analyze in every round.</span>
+          </article>
+          <article class="more-than-game__point-card" data-reveal data-reveal-delay="90ms">
+            <span class="more-than-game__point-icon" aria-hidden="true">
+              <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 18L2 22V6L9 2M9 18L16 22M9 18V2M16 22L22 18V2L16 6M16 22V6M16 6L9 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>Improve spatial and directional reasoning by comparing terrain, road systems, and geographic context before you guess.</span>
+          </article>
+          <article class="more-than-game__point-card" data-reveal data-reveal-delay="180ms">
+            <span class="more-than-game__point-icon" aria-hidden="true">
+              <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 15C8.68629 15 6 12.3137 6 9V3.44444C6 3.0306 6 2.82367 6.06031 2.65798C6.16141 2.38021 6.38021 2.16141 6.65798 2.06031C6.82367 2 7.0306 2 7.44444 2H16.5556C16.9694 2 17.1763 2 17.342 2.06031C17.6198 2.16141 17.8386 2.38021 17.9397 2.65798C18 2.82367 18 3.0306 18 3.44444V9C18 12.3137 15.3137 15 12 15ZM12 15V18M18 4H20.5C20.9659 4 21.1989 4 21.3827 4.07612C21.6277 4.17761 21.8224 4.37229 21.9239 4.61732C22 4.80109 22 5.03406 22 5.5V6C22 6.92997 22 7.39496 21.8978 7.77646C21.6204 8.81173 20.8117 9.62038 19.7765 9.89778C19.395 10 18.93 10 18 10M6 4H3.5C3.03406 4 2.80109 4 2.61732 4.07612C2.37229 4.17761 2.17761 4.37229 2.07612 4.61732C2 4.80109 2 5.03406 2 5.5V6C2 6.92997 2 7.39496 2.10222 7.77646C2.37962 8.81173 3.18827 9.62038 4.22354 9.89778C4.60504 10 5.07003 10 6 10M7.44444 22H16.5556C16.801 22 17 21.801 17 21.5556C17 19.5919 15.4081 18 13.4444 18H10.5556C8.59188 18 7 19.5919 7 21.5556C7 21.801 7.19898 22 7.44444 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>Discover places you’ve never seen before and build stronger global intuition each time you play.</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="dataset-source" aria-labelledby="dataset-source-title" data-reveal>
+      <h1 id="dataset-source-title">Location Dataset</h1>
+      <div class="dataset-source__card" data-reveal data-reveal-delay="90ms">
+        <p class="dataset-source__headline">
+          Built on <strong>10,000</strong> real-world Street View locations
+        </p>
+        <p class="dataset-source__text">
+          GeoGuesser rounds are generated from a curated pool of random locations to keep gameplay varied,
+          replayable, and geographically diverse.
+        </p>
+        <p class="dataset-source__text">
+          Canada, USA, Norway, France, Germany, Vietnam, and New Zealand are covered by Google Street View
+          but are not represented in this dataset.
+        </p>
+        <p class="dataset-source__credit">
+          Dataset credit:
+          <a
+            href="https://www.kaggle.com/datasets/paulchambaz/google-street-view?select=dataset"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google Street View dataset
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <h2>Quick links</h2>
+    <section class="activity-cards" aria-label="Home quick links">
+      {% if not user.is_authenticated %}
+        <a href="{% url 'project_create_account' %}" class="activity-card" data-hover="Create account">
+          <span class="activity-card__label">Create Account</span>
+        </a>
+      {% endif %}
+      <a href="{% url 'gamesession_start' %}" class="activity-card" data-hover="Start playing">
+        <span class="activity-card__label">Start New Game</span>
+      </a>
+      <a href="{% url 'location_list' %}" class="activity-card" data-hover="Browse places">
+        <span class="activity-card__label">Locations</span>
+      </a>
+      <a href="{% url 'gamesession_list' %}" class="activity-card" data-hover="Open sessions">
+        <span class="activity-card__label">Game Sessions</span>
+      </a>
+      <a href="{% url 'round_list' %}" class="activity-card" data-hover="Open rounds">
+        <span class="activity-card__label">Rounds</span>
+      </a>
+      <a href="{% url 'gamesession_stats' %}" class="activity-card" data-hover="View reports">
+        <span class="activity-card__label">Game Stats Report</span>
+      </a>
+      <a href="{% url 'project_activity' %}" class="activity-card" data-hover="Open activity">
+        <span class="activity-card__label">Activity</span>
+      </a>
+    </section>
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script defer src="{% static 'project/home-scroll-video.js' %}"></script>
+{% endblock %}

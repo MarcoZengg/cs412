@@ -8,11 +8,13 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-DIFFICULTY_CHOICES = (
+LOCATION_DIFFICULTY_CHOICES = (
     ("easy", "Easy"),
     ("medium", "Medium"),
     ("hard", "Hard"),
 )
+
+SESSION_DIFFICULTY_CHOICES = LOCATION_DIFFICULTY_CHOICES + (("mixed", "Mixed"),)
 
 
 class Player(models.Model):
@@ -34,7 +36,7 @@ class Location(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     country = models.CharField(max_length=64)
-    difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES)
+    difficulty = models.CharField(max_length=20, choices=LOCATION_DIFFICULTY_CHOICES)
     street_view_url = models.URLField(blank=True)
 
     def __str__(self):
@@ -50,7 +52,10 @@ class GameSession(models.Model):
     end_time = models.DateTimeField(blank=True, null=True)
     total_score = models.IntegerField(default=0)
     total_rounds = models.PositiveIntegerField(default=5)
-    difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES)
+    difficulty = models.CharField(max_length=20, choices=SESSION_DIFFICULTY_CHOICES)
+
+    class Meta:
+        ordering = ["-start_time"]
 
     def __str__(self):
         """Return short description for this session."""
@@ -67,6 +72,9 @@ class Round(models.Model):
     guess_longitude = models.FloatField(blank=True, null=True)
     distance_km = models.FloatField(blank=True, null=True)
     score = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ["round_number"]
 
     def __str__(self):
         """Return short description for admin/shell."""

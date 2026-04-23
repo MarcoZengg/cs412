@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>My account</title>
-</head>
-<body>
-  <p><a href="{% url "project_home" %}">Home</a></p>
+{% extends "project/base.html" %}
 
+{% block title %}My account · GeoGuesser{% endblock %}
+
+{% block content %}
   <h1>My account</h1>
-  <p>Your GeoGuesser account (only you can open this page).</p>
+  <p class="lead">Your GeoGuesser player profile (only you can open this page).</p>
 
-  <dl>
+  <dl class="account-dl">
     <dt>Username</dt>
     <dd>{{ account.user.username }}</dd>
     <dt>Display name</dt>
@@ -18,7 +14,6 @@
     <dt>Member since</dt>
     <dd>{{ account.created_at }}</dd>
     <dt>Game sessions</dt>
-    <dd>{{ session_count }} (<a href="{% url "gamesession_list" %}">view all</a>)</dd>
+    <dd>{{ session_count }} (<a href="{% url 'gamesession_list' %}">view all</a>)</dd>
   </dl>
-</body>
-</html>
+{% endblock %}

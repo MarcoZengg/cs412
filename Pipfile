@@ -8,6 +8,7 @@ django = "*"
 pillow = "*"
 plotly = "*"
 djangorestframework = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

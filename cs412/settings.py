@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 """
 Django settings for cs412 project.
 
@@ -11,10 +13,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load django/.env for local secrets (GOOGLE_MAPS_* etc.). File is gitignored.
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -136,6 +139,9 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'  # leading slash so image URLs resolve from site root
+
+GOOGLE_MAPS_API_KEY = (os.environ.get("GOOGLE_MAPS_API_KEY", "") or "").strip()
+GOOGLE_MAPS_MAP_ID = (os.environ.get("GOOGLE_MAPS_MAP_ID", "DEMO_MAP_ID") or "DEMO_MAP_ID").strip()
 
 import socket
 CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'

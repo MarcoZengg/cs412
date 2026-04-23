@@ -13,9 +13,11 @@ from django.urls import reverse_lazy
 
 
 from .views import (
+    ActivityView,
     CreateAccountView,
     AccountDetailView,
     GameSessionDeleteView,
+    EndGameSessionView,
     GameSessionDetailView,
     GameSessionListView,
     GameSessionStatsView,
@@ -31,6 +33,7 @@ from .views import (
 
 urlpatterns = [
     path("", HomeView.as_view(), name="project_home"),
+    path("activity/", ActivityView.as_view(), name="project_activity"),
     path(
         "login/",
         auth_views.LoginView.as_view(
@@ -53,6 +56,7 @@ urlpatterns = [
     path("sessions/stats/", GameSessionStatsView.as_view(), name="gamesession_stats"),
     path("sessions/start/", StartGameSessionView.as_view(), name="gamesession_start"),
     path("sessions/<int:pk>/", GameSessionDetailView.as_view(), name="gamesession_detail"),
+    path("sessions/<int:pk>/end/", EndGameSessionView.as_view(), name="gamesession_end"),
     path("sessions/<int:pk>/delete/", GameSessionDeleteView.as_view(), name="gamesession_delete"),
     path("sessions/<int:session_pk>/rounds/start/", StartRoundView.as_view(), name="round_start"),
     path("rounds/", RoundListView.as_view(), name="round_list"),

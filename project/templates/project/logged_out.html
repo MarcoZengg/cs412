@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Logged Out</title>
-</head>
-<body>
-  <h1>You are logged out.</h1>
-  <p>
-    <a href="{% url "project_login" %}">Log in again</a> |
-    <a href="{% url "project_home" %}">Back to Home</a>
+{% extends "project/base.html" %}
+
+{% block title %}Logged out · GeoGuesser{% endblock %}
+
+{% block content %}
+  <h1>You are logged out</h1>
+  <p class="lead">
+    <a href="{% url 'project_login' %}">Log in again</a>
+    or
+    <a href="{% url 'project_home' %}">return home</a>.
   </p>
-</body>
-</html>
+{% endblock %}

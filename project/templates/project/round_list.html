@@ -1,28 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Rounds</title>
-</head>
-<body>
-  <p><a href="{% url "project_home" %}">Home</a></p>
+{% extends "project/base.html" %}
+
+{% block title %}Rounds · GeoGuesser{% endblock %}
+
+{% block content %}
   <h1>Rounds</h1>
 
   {% if rounds %}
-    <ul>
-      {% for round in rounds %}
-        <li>
-          <a href="{% url 'round_detail' round.pk %}">
-            Session {{ round.game_session_id }} - Round {{ round.round_number }}
-          </a>
-          - Location: {{ round.location.name }}
-          - Score: {{ round.score }}
-          - <a href="{% url 'round_submit' round.pk %}">Submit Guess</a>
-        </li>
-      {% endfor %}
-    </ul>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Round</th>
+            <th scope="col">Session</th>
+            <th scope="col">Location</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for round in rounds %}
+            <tr>
+              <td><a href="{% url 'round_detail' round.pk %}">Round {{ round.round_number }}</a></td>
+              <td>Session {{ round.game_session_id }}</td>
+              <td>{{ round.location.name }}</td>
+              <td>{{ round.score }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if total_round_count >= 20 %}
+      <nav class="subnav" aria-label="Rounds controls">
+        {% if request.GET.show == "all" %}
+          <a href="?">Paginate (20 per page)</a>
+        {% else %}
+          <a href="?show=all">Show all</a>
+        {% endif %}
+        {% if is_paginated %}
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.show == 'all' %}&show=all{% endif %}">Previous</a>
+          {% endif %}
+          <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.show == 'all' %}&show=all{% endif %}">Next</a>
+          {% endif %}
+        {% endif %}
+      </nav>
+    {% endif %}
   {% else %}
-    <p>No rounds yet.</p>
+    <p class="empty-state">No rounds yet.</p>
   {% endif %}
-</body>
-</html>
+{% endblock %}

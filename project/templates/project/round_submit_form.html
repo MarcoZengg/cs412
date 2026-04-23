@@ -1,23 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Submit Guess</title>
-</head>
-<body>
-  <p>
-    <a href="{% url "project_home" %}">Home</a> |
-    <a href="{% url "round_list" %}">Back to Rounds</a> |
-    <a href="{% url "round_detail" round.pk %}">Back to Round Detail</a>
-  </p>
+{% extends "project/base.html" %}
+{% load static %}
 
-  <h1>Submit Guess for Round {{ round.round_number }}</h1>
-  <p>Location: {{ round.location.name }}</p>
+{% block title %}Submit Guess · GeoGuesser{% endblock %}
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit Guess</button>
-  </form>
-</body>
-</html>
+{% block extra_head %}
+  {% include "project/includes/google_maps_head.html" %}
+{% endblock %}
+
+{% block subnav %}
+  <nav class="subnav" aria-label="Section">
+    <a href="{% url 'gamesession_detail' round.game_session.pk %}">Session {{ round.game_session.pk }}</a>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <section class="auth-center auth-center--wide">
+    {% include "project/includes/session_stepper.html" %}
+    <h1>Submit Guess for Round {{ round.round_number }}</h1>
+    <p class="lead">Location: {{ round.location.name }}</p>
+
+  {% if google_maps_enabled %}
+    <form method="post">
+      {% csrf_token %}
+      <section class="round-map-section" aria-label="Guess map">
+        <h2>Street View at the target location</h2>
+        <p class="lead">Use this panorama to inspect nearby visual clues.</p>
+        <div id="streetview-root" class="streetview-wrap" style="height:760px;"></div>
+        <p id="streetview-status" class="empty-state">Loading Street View…</p>
+
+        <div class="round-map-section__head">
+          <h2>Pick your guess on the map</h2>
+          <div class="round-map-section__actions">
+            <button type="submit">Submit Guess</button>
+          </div>
+        </div>
+        <p class="lead">Click anywhere on the map to fill Guess latitude and Guess longitude automatically.</p>
+        <div
+          id="guess-map-root"
+          class="round-map-wrap"
+          data-default-lat="{{ round.location.latitude }}"
+          data-default-lng="{{ round.location.longitude }}"
+          {% if round.guess_latitude is not None %}data-guess-lat="{{ round.guess_latitude }}"{% endif %}
+          {% if round.guess_longitude is not None %}data-guess-lng="{{ round.guess_longitude }}"{% endif %}
+        >
+          <gmp-map
+            center="0,0"
+            zoom="2"
+            map-id="{{ google_maps_map_id }}"
+            style="width:100%;height:640px;border-radius:10px;"
+          ></gmp-map>
+        </div>
+        {% if form.non_field_errors %}
+          <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="guess-coords-row">
+          <p>
+            {{ form.guess_latitude.label_tag }}
+            {{ form.guess_latitude }}
+            {{ form.guess_latitude.errors }}
+          </p>
+          <p>
+            {{ form.guess_longitude.label_tag }}
+            {{ form.guess_longitude }}
+            {{ form.guess_longitude.errors }}
+          </p>
+        </div>
+      </section>
+    </form>
+  {% else %}
+    <form method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <div class="guess-coords-row">
+        <p>
+          {{ form.guess_latitude.label_tag }}
+          {{ form.guess_latitude }}
+          {{ form.guess_latitude.errors }}
+        </p>
+        <p>
+          {{ form.guess_longitude.label_tag }}
+          {{ form.guess_longitude }}
+          {{ form.guess_longitude.errors }}
+        </p>
+      </div>
+      <div class="form-actions">
+        <button type="submit">Submit Guess</button>
+      </div>
+    </form>
+  {% endif %}
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  {% if google_maps_enabled %}
+    <script defer src="{% static 'project/guess-map.js' %}"></script>
+  {% endif %}
+{% endblock %}

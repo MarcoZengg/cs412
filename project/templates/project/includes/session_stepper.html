@@ -1,0 +1,64 @@
+{% if stepper_total %}
+  <div class="session-stepper" role="navigation" aria-label="Round progress">
+    <ol class="session-stepper__row">
+      {% for s in stepper_steps %}
+        <li class="session-stepper__step">
+          {% if s.submit_round_pk %}
+            <a
+              href="{% url 'round_submit' s.submit_round_pk %}"
+              class="session-stepper__dot session-stepper__dot--{{ s.status }}"
+              {% if s.status == "active" %}aria-current="step"{% endif %}
+              aria-label="Open round {{ s.n }} submit form"
+            >
+              <span class="session-stepper__num">{{ s.n }}</span>
+            </a>
+          {% else %}
+            <span
+              class="session-stepper__dot session-stepper__dot--{{ s.status }}"
+              {% if s.status == "active" %}aria-current="step"{% endif %}
+            >
+              {% if s.status == "complete" %}
+                <span class="session-stepper__check" aria-hidden="true">✓</span>
+              {% else %}
+                <span class="session-stepper__num">{{ s.n }}</span>
+              {% endif %}
+            </span>
+          {% endif %}
+          {% if s.sub %}
+            <div class="session-stepper__bridge" role="presentation">
+              <span
+                class="session-stepper__connector session-stepper__connector--half{% if s.sub.left_connector %} session-stepper__connector--complete{% endif %}"
+                aria-hidden="true"
+              ></span>
+              {% if s.sub.round_pk and s.sub.status == "complete" %}
+                <a
+                  href="{% url 'round_detail' s.sub.round_pk %}"
+                  class="session-stepper__subdot session-stepper__subdot--{{ s.sub.status }}"
+                  aria-label="Open round {{ s.sub.round_number }} detail"
+                >
+                  {% if s.sub.status == "complete" %}
+                    <span class="session-stepper__subcheck" aria-hidden="true">✓</span>
+                  {% endif %}
+                </a>
+              {% elif s.sub.round_pk %}
+                <span
+                  class="session-stepper__subdot session-stepper__subdot--{{ s.sub.status }}"
+                  aria-label="Round {{ s.sub.round_number }} detail locked until submit is complete"
+                ></span>
+              {% else %}
+                <span
+                  class="session-stepper__subdot session-stepper__subdot--disabled"
+                  aria-hidden="true"
+                ></span>
+              {% endif %}
+              <span
+                class="session-stepper__connector session-stepper__connector--half{% if s.sub.right_connector %} session-stepper__connector--complete{% endif %}"
+                aria-hidden="true"
+              ></span>
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+{% endif %}

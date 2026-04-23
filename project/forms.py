@@ -17,6 +17,18 @@ class StartGameSessionForm(forms.ModelForm):
     class Meta:
         model = GameSession
         fields = ["difficulty", "total_rounds"]
+        widgets = {
+            "difficulty": forms.Select(
+                attrs={"class": "session-difficulty-select"}
+            ),
+            "total_rounds": forms.NumberInput(
+                attrs={"class": "session-rounds-input", "min": 1, "max": 50}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["difficulty"].initial = "mixed"
 
 
 class CreateAccountForm(UserCreationForm):

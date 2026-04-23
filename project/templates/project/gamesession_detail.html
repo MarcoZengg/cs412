@@ -1,45 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Game Session Detail</title>
-</head>
-<body>
-  <p>
-    <a href="{% url "project_home" %}">Home</a> |
-    <a href="{% url "gamesession_list" %}">Back to Sessions</a> |
-    <a href="{% url 'gamesession_delete' session.pk %}">Delete This Session</a>
-  </p>
+{% extends "project/base.html" %}
+{% load static %}
 
-  <h1>Session {{ session.pk }}</h1>
-  <p>
-    <a href="{% url 'round_start' session.pk %}">Start Next Round</a>
-  </p>
-  <ul>
-    <li>Player: {{ session.player }}</li>
-    <li>Difficulty: {{ session.get_difficulty_display }}</li>
-    <li>Total rounds: {{ session.total_rounds }}</li>
-    <li>Total score: {{ session.total_score }}</li>
-    <li>Started: {{ session.start_time }}</li>
-    <li>Ended: {{ session.end_time|default:'In progress' }}</li>
-  </ul>
+{% block title %}Session {{ session.pk }} · GeoGuesser{% endblock %}
 
-  <h2>Rounds in this Session</h2>
-  {% with rounds=session.rounds.all %}
-  {% if rounds %}
-    <ol>
-      {% for r in rounds %}
-        <li>
-          <a href="{% url 'round_detail' r.pk %}">Round {{ r.round_number }}</a>
-          - Score: {{ r.score }}
-          - Distance: {{ r.distance_km|default:'N/A' }} km
-          - <a href="{% url 'round_submit' r.pk %}">Submit guess for this round</a>
-        </li>
-      {% endfor %}
-    </ol>
-  {% else %}
-    <p>No rounds yet.</p>
-  {% endif %}
-  {% endwith %}
-</body>
-</html>
+{% block subnav %}
+  <nav class="subnav" aria-label="Section">
+    <a href="{% url 'gamesession_list' %}">Session List</a>
+    <a href="{% url 'gamesession_delete' session.pk %}">Delete this session</a>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <section class="auth-center">
+    {% include "project/includes/session_stepper.html" %}
+    <h1>Session {{ session.pk }}</h1>
+    <div class="round-score-standalone" aria-label="Total session score">
+      <p class="round-score-standalone__label">Total Score</p>
+      <p
+        class="round-score-standalone__value"
+        data-countup
+        data-countup-from="0"
+        data-countup-to="{{ session.total_score|default:0 }}"
+        data-countup-duration="2"
+      >{{ session.total_score|default:0 }}</p>
+    </div>
+    {% if session.end_time is None %}
+      <p class="lead">
+        <a href="{% url 'round_start' session.pk %}" class="button">Keep Playing</a>
+      </p>
+    {% endif %}
+
+    <ul class="detail-list">
+      <li>Player: {{ session.player }}</li>
+      <li>Difficulty: {{ session.get_difficulty_display }}</li>
+      <li>Total rounds: {{ session.total_rounds }}</li>
+      <li>Total score: {{ session.total_score }}</li>
+      <li>Started: {{ session.start_time }}</li>
+      <li>Ended: {{ session.end_time|default:'In progress' }}</li>
+    </ul>
+
+    <h2>Rounds in this game session</h2>
+    {% with rounds=session.rounds.all %}
+      {% if rounds %}
+        <ol class="link-list">
+          {% for r in rounds %}
+            <li>
+              <a href="{% url 'round_detail' r.pk %}">Round {{ r.round_number }}</a>
+              — Score: {{ r.score }}
+              — Distance: {{ r.distance_km|default:'N/A' }} km
+            </li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <p class="empty-state">No rounds yet.</p>
+      {% endif %}
+    {% endwith %}
+
+    {% if session.end_time is None %}
+      <form method="post" action="{% url 'gamesession_end' session.pk %}" class="form-actions">
+        {% csrf_token %}
+        <button type="submit">End This Game</button>
+      </form>
+    {% else %}
+      <p class="lead">Game already ended.</p>
+    {% endif %}
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script defer src="{% static 'project/countup.js' %}"></script>
+{% endblock %}

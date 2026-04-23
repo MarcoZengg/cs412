@@ -1,26 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Create Account</title>
-</head>
-<body>
-  <p>
-    <a href="{% url "project_home" %}">Back to Home</a>
-  </p>
+{% extends "project/base.html" %}
 
-  <h1>Create Account</h1>
-  <p>Create a username/password account for this game app.</p>
+{% block title %}Create Account · GeoGuesser{% endblock %}
 
-  <form method="post">
-    {% csrf_token %}
+{% block content %}
+  <section class="auth-center">
+    <h1>Create Account</h1>
+    <p class="lead">Create a username and password for this game app.</p>
 
-    <fieldset>
-      <legend>Login Credentials</legend>
-      {{ form.as_p }}
-    </fieldset>
-
-    <button type="submit">Create Account</button>
-  </form>
-</body>
-</html>
+    <form method="post">
+      {% csrf_token %}
+      <fieldset>
+        {{ form.as_p }}
+      </fieldset>
+      <div class="form-actions">
+        <button type="submit">Create Account</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
