@@ -58,7 +58,8 @@
         pov: { heading: 34, pitch: 5 },
         linksControl: true,
         panControl: true,
-        addressControl: true,
+        addressControl: false,
+        showRoadLabels: false,
         enableCloseButton: false,
       });
       if (streetViewStatus) streetViewStatus.textContent = "";

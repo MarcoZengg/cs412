@@ -30,14 +30,24 @@
       </p>
     {% endif %}
 
-    <ul class="detail-list">
-      <li>Player: {{ session.player }}</li>
-      <li>Difficulty: {{ session.get_difficulty_display }}</li>
-      <li>Total rounds: {{ session.total_rounds }}</li>
-      <li>Total score: {{ session.total_score }}</li>
-      <li>Started: {{ session.start_time }}</li>
-      <li>Ended: {{ session.end_time|default:'In progress' }}</li>
-    </ul>
+    <div class="session-card" aria-label="Session details card">
+      <div class="session-card-inner">
+        <div class="session-card-front">
+          <p class="session-card-front__title">Session Info</p>
+          <p class="session-card-front__hint">Hover to view details</p>
+        </div>
+        <div class="session-card-back">
+          <ul class="detail-list session-card-back__list">
+            <li>Player: {{ session.player }}</li>
+            <li>Difficulty: {{ session.get_difficulty_display }}</li>
+            <li>Total rounds: {{ session.total_rounds }}</li>
+            <li>Total score: {{ session.total_score }}</li>
+            <li>Started: {{ session.start_time }}</li>
+            <li>Ended: {{ session.end_time|default:'In progress' }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
     <h2>Rounds in this game session</h2>
     {% with rounds=session.rounds.all %}
