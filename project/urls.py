@@ -12,6 +12,7 @@ from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 
 
+# Project app page views used in URL routing.
 from .views import (
     ActivityView,
     CreateAccountView,
@@ -31,6 +32,7 @@ from .views import (
     SubmitGuessView,
 )
 
+# Primary URL patterns for project pages.
 urlpatterns = [
     path("", HomeView.as_view(), name="project_home"),
     path("activity/", ActivityView.as_view(), name="project_activity"),
@@ -63,4 +65,5 @@ urlpatterns = [
     path("rounds/<int:pk>/", RoundDetailView.as_view(), name="round_detail"),
     path("rounds/<int:pk>/submit/", SubmitGuessView.as_view(), name="round_submit"),
 ]
+# Development-only static file serving.
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

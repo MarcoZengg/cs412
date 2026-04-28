@@ -1,4 +1,5 @@
 
+{# File: home.html | Description: Landing page with hero animation and quick links. #}
 {% extends "project/base.html" %}
 {% load static %}
 
@@ -8,6 +9,7 @@
 {% block body_class %}home-page{% endblock %}
 
 {% block content %}
+  {# Scroll-linked hero canvas animation section. #}
   <section class="home-hero" data-home-hero>
     <div class="home-hero__sticky">
       <canvas
@@ -28,6 +30,7 @@
     </div>
   </section>
 
+  {# Informational sections and quick navigation links. #}
   <section class="home-content" data-reveal>
     <!-- <p class="lead">Browse locations, run game sessions, submit guesses, and view your stats.</p> -->
 

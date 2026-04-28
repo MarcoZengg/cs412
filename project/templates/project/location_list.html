@@ -1,3 +1,4 @@
+{# File: location_list.html | Description: Table listing all available locations. #}
 {% extends "project/base.html" %}
 
 {% block title %}Locations · GeoGuesser{% endblock %}
@@ -6,6 +7,7 @@
   <h1>Locations</h1>
 
   {% if locations %}
+    {# Location table with link to each detail page. #}
     <div class="table-wrap">
       <table class="data-table">
         <thead>
@@ -26,6 +28,7 @@
         </tbody>
       </table>
     </div>
+    {# Optional pagination/show-all controls for large datasets. #}
     {% if total_location_count >= 20 %}
       <nav class="subnav" aria-label="Locations controls">
         {% if request.GET.show == "all" %}

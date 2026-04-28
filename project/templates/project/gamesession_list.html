@@ -1,3 +1,4 @@
+{# File: gamesession_list.html | Description: Table listing current user's sessions. #}
 {% extends "project/base.html" %}
 
 {% block title %}Game Sessions · GeoGuesser{% endblock %}
@@ -6,6 +7,7 @@
   <h1>Game Sessions</h1>
 
   {% if sessions %}
+    {# Session table with detail/delete links. #}
     <div class="table-wrap">
       <table class="data-table">
         <thead>
@@ -30,6 +32,7 @@
         </tbody>
       </table>
     </div>
+    {# Show pagination controls only when enough rows exist. #}
     {% if total_session_count >= 20 %}
       <nav class="subnav" aria-label="Game sessions controls">
         {% if request.GET.show == "all" %}

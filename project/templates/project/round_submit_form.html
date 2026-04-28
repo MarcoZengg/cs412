@@ -1,3 +1,4 @@
+{# File: round_submit_form.html | Description: Submit guess with Street View + map UI. #}
 {% extends "project/base.html" %}
 {% load static %}
 
@@ -15,10 +16,12 @@
 
 {% block content %}
   <section class="auth-center auth-center--wide">
+    {# Session stepper provides progress context while submitting a guess. #}
     {% include "project/includes/session_stepper.html" %}
     <h1>Submit Guess for Round {{ round.round_number }}</h1>
     <p class="lead">Location: {{ round.location.name }}</p>
 
+  {# Primary branch: interactive map and Street View are enabled. #}
   {% if google_maps_enabled %}
     <form method="post">
       {% csrf_token %}
@@ -68,6 +71,7 @@
       </section>
     </form>
   {% else %}
+    {# Fallback branch: plain coordinate form when Maps API is unavailable. #}
     <form method="post">
       {% csrf_token %}
       {% if form.non_field_errors %}

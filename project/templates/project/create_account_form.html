@@ -1,3 +1,4 @@
+{# File: create_account_form.html | Description: User registration form page. #}
 {% extends "project/base.html" %}
 
 {% block title %}Create Account · GeoGuesser{% endblock %}
@@ -7,6 +8,7 @@
     <h1>Create Account</h1>
     <p class="lead">Create a username and password for this game app.</p>
 
+    {# Standard Django form post for account creation. #}
     <form method="post">
       {% csrf_token %}
       <fieldset>

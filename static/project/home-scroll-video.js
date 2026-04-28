@@ -1,3 +1,9 @@
+/*
+ * File: home-scroll-video.js
+ * Description: Drive the home-page hero canvas frame animation from
+ * scroll position and reveal sections as they enter the viewport.
+ */
+
 (() => {
   const hero = document.querySelector("[data-home-hero]");
   const canvas = document.querySelector("[data-home-hero-canvas]");
@@ -17,6 +23,7 @@
     "(prefers-reduced-motion: reduce)"
   ).matches;
 
+  // Reveal cards/sections once as the user scrolls down the page.
   function initScrollReveals() {
     const revealTargets = document.querySelectorAll("[data-reveal]");
     if (!revealTargets.length) return;
@@ -138,6 +145,7 @@
     requestAnimationFrame(renderFrame);
   }
 
+  // Load image frames in small concurrent batches to limit network spikes.
   function loadNextBatch() {
     while (inFlight < CONCURRENCY && nextToLoad < frameCount) {
       const index = nextToLoad++;

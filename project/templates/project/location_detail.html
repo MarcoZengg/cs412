@@ -1,3 +1,4 @@
+{# File: location_detail.html | Description: Full details for one location row. #}
 {% extends "project/base.html" %}
 
 {% block title %}{{ location.name }} · GeoGuesser{% endblock %}
@@ -9,6 +10,7 @@
 {% endblock %}
 
 {% block content %}
+  {# Display all location attributes for review/debugging. #}
   <h1>{{ location.name }}</h1>
   <ul class="detail-list">
     <li>Country: {{ location.country }}</li>

@@ -1,3 +1,4 @@
+{# File: activity.html | Description: Quick navigation hub for gameplay pages. #}
 {% extends "project/base.html" %}
 
 {% block title %}Activity · GeoGuesser{% endblock %}
@@ -7,6 +8,7 @@
     <h1>Activity</h1>
     <p class="lead">Quick links to your gameplay pages.</p>
 
+    {# Cards link to frequently-used activity pages. #}
     <section class="activity-cards" aria-label="Activity links">
       <a href="{% url 'gamesession_list' %}" class="activity-card" data-hover="Open Sessions">
         <span class="activity-card__label">Game Sessions</span>

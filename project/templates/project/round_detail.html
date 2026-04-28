@@ -1,3 +1,4 @@
+{# File: round_detail.html | Description: Round results, score, and map visualization. #}
 {% extends "project/base.html" %}
 {% load static %}
 
@@ -15,6 +16,7 @@
 
 {% block content %}
   <section class="auth-center auth-center--wide">
+    {# Stepper + score card for quick round progress context. #}
     {% include "project/includes/session_stepper.html" %}
     <h1>Round {{ round.round_number }}</h1>
     <div class="round-score-standalone" aria-label="Round score">
@@ -36,6 +38,7 @@
       <li>Score: {{ round.score }}</li>
     </ul> -->
 
+    {# Map section: optional Google map when API key is configured. #}
     <section class="round-map-section" aria-label="Map">
       <div class="round-map-section__head">
         <h2>Map</h2>

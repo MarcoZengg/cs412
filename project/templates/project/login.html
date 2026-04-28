@@ -1,3 +1,4 @@
+{# File: login.html | Description: Login form with account creation shortcut. #}
 {% extends "project/base.html" %}
 
 {% block title %}Log in · GeoGuesser{% endblock %}
@@ -7,6 +8,7 @@
     <h1>Log in</h1>
     <p class="lead">Sign in to access game sessions and rounds.</p>
 
+    {# Django auth form submission; includes alternate create-account CTA. #}
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}

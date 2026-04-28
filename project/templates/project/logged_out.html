@@ -1,8 +1,10 @@
+{# File: logged_out.html | Description: Post-logout confirmation page. #}
 {% extends "project/base.html" %}
 
 {% block title %}Logged out · GeoGuesser{% endblock %}
 
 {% block content %}
+  {# Offer primary next actions after sign-out. #}
   <h1>You are logged out</h1>
   <p class="lead">
     <a href="{% url 'project_login' %}">Log in again</a>

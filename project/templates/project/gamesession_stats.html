@@ -1,8 +1,10 @@
+{# File: gamesession_stats.html | Description: Aggregate stats for completed sessions. #}
 {% extends "project/base.html" %}
 
 {% block title %}Stats Report · GeoGuesser{% endblock %}
 
 {% block content %}
+  {# Top-level metric summary values. #}
   <h1>Game Stats Report</h1>
   <p class="lead">Completed sessions only (your account).</p>
 
@@ -15,6 +17,7 @@
     <dd>{{ avg_game_score_total|floatformat:2 }}</dd>
   </dl>
 
+  {# Difficulty-level averages in a simple data table. #}
   <h2>Average Score by Difficulty</h2>
   {% if avg_score_by_difficulty %}
     <div class="table-wrap">

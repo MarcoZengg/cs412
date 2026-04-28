@@ -1,3 +1,4 @@
+{# File: gamesession_detail.html | Description: Session detail, score, rounds, and actions. #}
 {% extends "project/base.html" %}
 {% load static %}
 
@@ -12,6 +13,7 @@
 
 {% block content %}
   <section class="auth-center">
+    {# Progress stepper + score summary for this session. #}
     {% include "project/includes/session_stepper.html" %}
     <h1>Session {{ session.pk }}</h1>
     <div class="round-score-standalone" aria-label="Total session score">
@@ -30,6 +32,7 @@
       </p>
     {% endif %}
 
+    {# Flip card presents session metadata on front/back faces. #}
     <div class="session-card" aria-label="Session details card">
       <div class="session-card-inner">
         <div class="session-card-front">
@@ -49,6 +52,7 @@
       </div>
     </div>
 
+    {# Round list for this session only. #}
     <h2>Rounds in this game session</h2>
     {% with rounds=session.rounds.all %}
       {% if rounds %}

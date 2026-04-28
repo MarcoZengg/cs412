@@ -1,6 +1,11 @@
+"""
+File: admin.py
+Author: Xiankun Zeng (xiankz23@bu.edu)
+Description: Django admin registrations for project models.
+"""
+
 from django.contrib import admin
 
-# Register your models here.
 from .models import Player, Location, GameSession, Round
 
 # -----------------------------------------------------------------------------

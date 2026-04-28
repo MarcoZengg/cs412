@@ -1,3 +1,4 @@
+{# File: round_list.html | Description: Table listing rounds for current user. #}
 {% extends "project/base.html" %}
 
 {% block title %}Rounds · GeoGuesser{% endblock %}
@@ -6,6 +7,7 @@
   <h1>Rounds</h1>
 
   {% if rounds %}
+    {# Round table with links to per-round result pages. #}
     <div class="table-wrap">
       <table class="data-table">
         <thead>
@@ -28,6 +30,7 @@
         </tbody>
       </table>
     </div>
+    {# Controls appear only when the full dataset reaches pagination threshold. #}
     {% if total_round_count >= 20 %}
       <nav class="subnav" aria-label="Rounds controls">
         {% if request.GET.show == "all" %}

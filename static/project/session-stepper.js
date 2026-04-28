@@ -1,3 +1,9 @@
+/*
+ * File: session-stepper.js
+ * Description: Keep the active session-stepper node centered in the
+ * horizontal scroll viewport and re-center on resize/click actions.
+ */
+
 (() => {
   const STEPPER_SELECTOR = ".session-stepper";
   const ACTIVE_SELECTOR =
@@ -29,6 +35,7 @@
     centerElement(stepper, current, behavior);
   }
 
+  // Initialize one stepper instance and keep click targets centered.
   function installStepper(stepper) {
     centerCurrentStep(stepper, "auto");
 

@@ -1,3 +1,4 @@
+{# File: base.html | Description: Shared page shell with nav/footer and content blocks. #}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +12,7 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+  {# Primary navigation shown on all pages. #}
   <header class="card-nav-container">
     <nav class="card-nav" data-card-nav>
       <div class="card-nav-top">
@@ -97,11 +99,13 @@
     </nav>
   </header>
 
+  {# Optional page-specific secondary navigation. #}
   {% block subnav %}{% endblock %}
 
   <main class="page-wrap">
     {% block content %}{% endblock %}
   </main>
+  {# Shared footer links and social icons. #}
   <footer class="app-footer" aria-label="Site footer">
     <div class="app-footer__inner">
       <div class="app-footer__top">

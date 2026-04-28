@@ -1,3 +1,4 @@
+{# File: gamesession_confirm_delete.html | Description: Confirm delete for one session. #}
 {% extends "project/base.html" %}
 
 {% block title %}Delete Session {{ session.pk }} · GeoGuesser{% endblock %}
@@ -10,6 +11,7 @@
 
 {% block content %}
   <section class="auth-center">
+    {# Warning text and irreversible action confirmation button. #}
     <h1>Delete Session {{ session.pk }}</h1>
     <div class="delete-warning">
       <p>This action will delete the session and all related rounds. This cannot be undone.</p>
